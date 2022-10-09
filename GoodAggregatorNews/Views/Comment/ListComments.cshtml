@@ -1,0 +1,19 @@
+﻿@using GoodAggregatorNews.Models
+
+@model CommentsListWithArticle
+
+@{
+	ViewData["Title"] = "List comments";
+}
+
+<div class="container" id="above-add-comments-section">
+    <div id="comments-container" class="row">
+        @foreach (var comment in Model.Comments)
+        {
+            @await Html.PartialAsync("Comment", comment)
+        }
+    </div>    
+
+    <hr/>
+    <p id="login-to-see-comments">Only authorized users can leave comments. Please register or login</p>
+</div>
