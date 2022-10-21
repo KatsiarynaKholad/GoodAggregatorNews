@@ -4,6 +4,7 @@ using GoodAggregatorNews.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoodAggregatorNews.Database.Migrations
 {
     [DbContext(typeof(GoodAggregatorNewsContext))]
-    partial class GoodAggregatorNewsContextModelSnapshot : ModelSnapshot
+    [Migration("20221030191517_AddFieldFullnameOfComment")]
+    partial class AddFieldFullnameOfComment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

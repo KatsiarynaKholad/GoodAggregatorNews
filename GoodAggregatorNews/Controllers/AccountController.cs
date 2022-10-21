@@ -4,6 +4,7 @@ using GoodAggregatorNews.Core.DataTransferObject;
 using GoodAggregatorNews.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Security.Claims;
@@ -16,7 +17,7 @@ namespace GoodAggregatorNews.Controllers
         private readonly IRoleService _roleService;
         private readonly IMapper _mapper;
 
-        public AccountController(IClientService clientService, 
+        public AccountController(IClientService clientService,
             IRoleService roleService,
             IMapper mapper)
         {
@@ -56,6 +57,7 @@ namespace GoodAggregatorNews.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Register was not successful");
                 throw;
             }
         }
@@ -67,7 +69,7 @@ namespace GoodAggregatorNews.Controllers
             {
                 var clientdDto = await _clientService.GetUserByEmailAsync(email);
 
-                if (clientdDto!=null)
+                if (clientdDto != null)
                 {
                     return Ok(false);
                 }
@@ -75,7 +77,7 @@ namespace GoodAggregatorNews.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: CheckEmail is not successful");
+                Log.Error(ex, "Operation: CheckEmail was not successful");
                 throw;
             }
         }
@@ -91,20 +93,20 @@ namespace GoodAggregatorNews.Controllers
         {
             try
             {
-                var isPasswordCorrect = await _clientService.CheckUserPassword(model.Email, model.Password);
-                if (isPasswordCorrect)
+                if (ModelState.IsValid)
                 {
-                    await Authenticate(model.Email);
-                    return RedirectToAction("Index", "Home");
+                    var isPasswordCorrect = await _clientService.CheckUserPassword(model.Email, model.Password);
+                    if (isPasswordCorrect)
+                    {
+                        await Authenticate(model.Email);
+                        return RedirectToAction("Index", "Article");
+                    }
                 }
-                else
-                {
-                    return View();
-                }
+                return View(model);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: Login is not successful");
+                Log.Error(ex, "Operation: Login was not successful");
                 throw;
             }
         }
@@ -116,10 +118,10 @@ namespace GoodAggregatorNews.Controllers
                 var userDto = await _clientService.GetUserByEmailAsync(email);
 
                 var claims = new List<Claim>()
-            {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userDto.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, userDto.RoleName)
-            };
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, userDto.Email),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, userDto.RoleName)
+                };
 
                 var identity = new ClaimsIdentity(claims,
                     "ApplicationCookie",
@@ -131,9 +133,70 @@ namespace GoodAggregatorNews.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: Authenticate is not successful");
+                Log.Error(ex, "Operation: Authenticate was not successful");
                 throw;
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                await HttpContext.SignOutAsync();
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: Logout was not successful");
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetClientData()
+        {
+            var clientEmail = User.Identity?.Name;
+            if (string.IsNullOrEmpty(clientEmail))
+            {
+                return BadRequest();
+            }
+
+            var client = _mapper.Map<ClientDataModel>(await _clientService.GetUserByEmailAsync(clientEmail));
+            return Ok(client);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult IsLoggedIn()
+        {
+            if (User.Identities.Any(identity => identity.IsAuthenticated))
+            {
+                return Ok(true);
+            }
+
+            return Ok(false);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ClientLoginPreview()
+        {
+            if (User.Identities.Any(identity => identity.IsAuthenticated))
+            {
+                var userEmail = User.Identity?.Name;
+                if (string.IsNullOrEmpty(userEmail))
+                {
+                    return BadRequest();
+                }
+
+                var user = _mapper.Map<ClientDataModel>(await _clientService.GetUserByEmailAsync(userEmail));
+                return View(user);
+            }
+
+            return View();
+        }
+
     }
 }

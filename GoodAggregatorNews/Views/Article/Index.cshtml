@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ArticleDto>
+
+@{
+	ViewData["Title"] = "Article";
+}
+
+<h1>Articles</h1>
+
+<a href="~/article/create">Create article</a>
+
+ <div class="row">
+    @if (Model.Any())
+    {
+       foreach (var item in Model)
+        {
+            await Html.RenderPartialAsync("ArticlePreview", item);
+        }
+
+        <div>
+                               <nav aria-label="Page navigation example">
+                  <ul class="pagination">
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li> 
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+                @*сделать ссылки*@
+           </div>
+     
+    }
+</div>

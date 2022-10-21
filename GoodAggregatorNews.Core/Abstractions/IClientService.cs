@@ -14,5 +14,6 @@ namespace GoodAggregatorNews.Core.Abstractions
         Task<bool> CheckUserPassword(Guid userId, string password);
         Task<int> RegisterUser(ClientDto dto);
         Task<ClientDto> GetUserByEmailAsync(string email);
+
     }
 }

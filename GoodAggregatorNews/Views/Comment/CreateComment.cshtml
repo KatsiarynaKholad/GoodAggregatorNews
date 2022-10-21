@@ -1,20 +1,26 @@
 ﻿@using GoodAggregatorNews.Models
-
-@model CreateComment
-
+@*???*@
+@model CommentsListWithArticle
 @{
-	ViewData["Title"] = "Create comment";
+    Layout = null;
 }
 
-<div class="row container">
-    <input type="hidden" id="articleId" name="articleId" value="@Model.ArticleId" />
-    <div class="col-sm-12">
-        <label for="text">Leave a comment:</label>
-        <textarea name="text" class="form-control" id="text" rows="3"></textarea>
-    </div><br /><br />
+<div>
+    <h1>Create a comment</h1>
+    <form asp-controller="Comment" asp-action="CreateComment" method="post">
+        <div class="mb-3">
+            <label for="text" class="form-label">Text</label>
+            <input asp-for="Text" type="text" class="form-control" id="text" required>
+            <span asp-validation-for="Text" class="text-danger"></span>
+        </div>
+    
+        <input type="submit" class="btn btn-primary" value="Submit">
 
-    <br /> <br /> <br /> <br /><div class="col-sm-12">
-        <button class="btn btn-primary write-comment-btn" id="create-comment-btn">Send</button>
-    </div>
+    </form>
 </div>
 
+@section Scripts
+{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

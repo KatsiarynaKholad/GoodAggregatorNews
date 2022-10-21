@@ -11,6 +11,10 @@
           <input asp-for="Email" type="email" class="form-control" id="email" required>
            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
+         <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input asp-for="Name" asp-for="name" class="form-control" id="name">
+        </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
           <input type="password" asp-for="Password" class="form-control" id="password">
@@ -23,6 +27,7 @@
         </div>
 
         <input type="submit" class="btn btn-primary" value="Submit">
+
     </form>
 </div>
 

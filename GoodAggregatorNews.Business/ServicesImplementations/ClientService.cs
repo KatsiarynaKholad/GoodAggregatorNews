@@ -127,5 +127,6 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 return Convert.ToHexString(hashBytes);
             }
         }
+
     }
 }

@@ -6,5 +6,7 @@ namespace GoodAggregatorNews.Models
     {
         public Guid ArticleId { get; set; }
         public List<CommentDto> Comments {get;set;}
+        public string Text { get; set; }
+
     }
 }

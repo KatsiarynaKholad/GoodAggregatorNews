@@ -26,6 +26,8 @@ namespace GoodAggregatorNews
                .AddCookie(options =>
                {
                    options.LoginPath = new PathString(@"/Account/Login");
+                   options.LogoutPath = new PathString(@"/Account/Logout");
+                   options.AccessDeniedPath = new PathString(@"/Account/Login");
                });
 
             // Add services to the container.
@@ -39,12 +41,17 @@ namespace GoodAggregatorNews
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddScoped<IArticleService, ArticleService>();
-            //builder.Services.AddScoped<ISourceService, SourceService>();
-            //builder.Services.AddScoped<IClientService, ClientService>();
-            //builder.Services.AddScoped<IRoleService, RoleService>();
-            //builder.Services.AddScoped<IRepository<Source>, Repository<Source>>();
-            //builder.Services.AddScoped<IRepository<Client>, Repository<Client>>();
-            //builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
+            builder.Services.AddScoped<ISourceService, SourceService>();
+            builder.Services.AddScoped<IClientService, ClientService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
+
+
+            builder.Services.AddScoped<IRepository<Article>, Repository<Article>>();
+            builder.Services.AddScoped<IRepository<Source>, Repository<Source>>();
+            builder.Services.AddScoped<IRepository<Client>, Repository<Client>>();
+            builder.Services.AddScoped<IRepository<Comment>, Repository<Comment>>();
+            builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
@@ -62,6 +69,7 @@ namespace GoodAggregatorNews
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

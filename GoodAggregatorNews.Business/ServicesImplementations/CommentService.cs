@@ -71,8 +71,9 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             {
                 var comments = await _unitOfWork.Comments
                   .FindBy(comment => comment.ArticleId.Equals(id))
-                  .OrderBy(date => date.PublicationDate)
+                  .OrderByDescending(date => date.PublicationDate)
                   .ToListAsync();
+
                 if (comments!=null)
                 {
                     var dtoList = _mapper.Map<List<CommentDto>>(comments);

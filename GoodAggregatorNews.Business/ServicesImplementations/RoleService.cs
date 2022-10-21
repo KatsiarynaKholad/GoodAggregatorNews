@@ -42,11 +42,11 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        public async Task<string> GetRoleNameById(Guid Id)
+        public async Task<string> GetRoleNameById(Guid id)
         {
             try
             {
-                var role = await _unitOfWork.Roles.GetByIdAsync(Id);
+                var role = await _unitOfWork.Roles.GetByIdAsync(id);
                 if (role!=null)
                 {
                     return role.Name;

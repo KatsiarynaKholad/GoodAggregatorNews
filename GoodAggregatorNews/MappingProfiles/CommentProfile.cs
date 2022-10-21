@@ -1,9 +1,16 @@
-﻿namespace GoodAggregatorNews.MappingProfiles
+﻿using AutoMapper;
+using GoodAggregatorNews.Core.DataTransferObject;
+using GoodAggregatorNews.Database.Entities;
+
+namespace GoodAggregatorNews.MappingProfiles
 {
-    public class CommentProfile
+    public class CommentProfile  : Profile
     {
         public CommentProfile()
         {
+            CreateMap<Comment, CommentDto>();
+
+            CreateMap<CommentDto, Comment>();
 
         }
     }
