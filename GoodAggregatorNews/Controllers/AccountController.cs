@@ -56,6 +56,7 @@ namespace GoodAggregatorNews.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Register was not successful");
                 throw;
             }
         }
@@ -75,7 +76,7 @@ namespace GoodAggregatorNews.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: CheckEmail is not successful");
+                Log.Error(ex, "Operation: CheckEmail was not successful");
                 throw;
             }
         }
@@ -91,20 +92,20 @@ namespace GoodAggregatorNews.Controllers
         {
             try
             {
-                var isPasswordCorrect = await _clientService.CheckUserPassword(model.Email, model.Password);
-                if (isPasswordCorrect)
+                if (!ModelState.IsValid)
                 {
-                    await Authenticate(model.Email);
-                    return RedirectToAction("Index", "Home");
+                    var isPasswordCorrect = await _clientService.CheckUserPassword(model.Email, model.Password);
+                    if (isPasswordCorrect)
+                    {
+                        await Authenticate(model.Email);
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
-                else
-                {
-                    return View();
-                }
+                return View(model);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: Login is not successful");
+                Log.Error(ex, "Operation: Login was not successful");
                 throw;
             }
         }
@@ -131,7 +132,23 @@ namespace GoodAggregatorNews.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: Authenticate is not successful");
+                Log.Error(ex, "Operation: Authenticate was not successful");
+                throw;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                await HttpContext.SignOutAsync();
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: Logout was not successful");
                 throw;
             }
         }

@@ -21,6 +21,7 @@ namespace GoodAggregatorNews.Controllers
             _roleService = roleService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> ListComments(Guid id)   //??
         {
             try

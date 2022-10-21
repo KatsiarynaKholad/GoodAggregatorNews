@@ -1,0 +1,22 @@
+﻿@model ArticleDto
+
+@{
+	ViewData["Title"] = "Details";
+}
+
+<div>
+            <h3>
+                @Model.Title
+             </h3>
+            <div>
+                 <p>
+                        @Model.FullText
+                  </p>
+             </div>
+           <h6>
+                @Model.PublicationDate
+            </h6>
+           
+</div>
+
+<hr/>

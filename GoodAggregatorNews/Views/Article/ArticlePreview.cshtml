@@ -1,0 +1,19 @@
+﻿@model ArticleDto
+
+<div class="col-12 col-sm-10 col-md-6 col-lg-4 col-xl-3 margin-botton-15" id="article-preview">
+            <h3>
+                @Html.DisplayFor(modelItem => Model.Title)
+             </h3>
+             <i>@Html.DisplayFor(modelItem=>Model.Id)</i>
+            <div>
+                 <p>
+                         @Html.DisplayFor(modelItem => Model.ShortDescription)
+                  </p>
+             </div>
+           <h6>
+                @Html.DisplayFor(modelItem => Model.PublicationDate)
+            </h6>
+            <div class="row margin-0">
+                 <a class="col-12 col-sm-10 btn btn-primary" href="~/article/details/@Model.Id">Read details</a> 
+           </div>
+        </div>

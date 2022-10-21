@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GoodAggregatorNews.Core.DataTransferObject;
 using GoodAggregatorNews.Database.Entities;
+using GoodAggregatorNews.Models;
 
 namespace GoodAggregatorNews.MappingProfiles
 {
@@ -10,6 +11,8 @@ namespace GoodAggregatorNews.MappingProfiles
         {
             CreateMap<Article, ArticleDto>();
             CreateMap<ArticleDto, Article>();   //изменить!
+            CreateMap<ArticleDto, ArticleModel>().ReverseMap();
+
         }
     }
 }

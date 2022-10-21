@@ -8,7 +8,7 @@ namespace GoodAggregatorNews.Models
     {
         [Required]
         [EmailAddress]
-        [Remote("CheckEmail", "Account",
+        [Remote("Checkemail", "Account",
         HttpMethod = WebRequestMethods.Http.Post, ErrorMessage = "Email is already exists")]
         public string Email { get; set; }
 
