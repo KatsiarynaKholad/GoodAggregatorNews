@@ -12,6 +12,7 @@ namespace GoodAggregatorNews.Models
            HttpMethod = WebRequestMethods.Http.Post, ErrorMessage = "Email is already exists")]
         public string Email { get; set; }
 
+        public string Name { get; set; }
         [Required]
         [MinLength(3), MaxLength(20)]
         public string Name { get; set; }
