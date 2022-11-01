@@ -10,7 +10,7 @@ namespace GoodAggregatorNews.Models
         [EmailAddress]
         //[Remote("Checkemail", "Account",
         //HttpMethod = WebRequestMethods.Http.Post)]
-            //, ErrorMessage = "Email is already exists")]
+        //, ErrorMessage = "Email is already exists")]
         public string Email { get; set; }
 
         [Required]

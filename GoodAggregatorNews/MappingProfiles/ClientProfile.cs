@@ -26,6 +26,7 @@ namespace GoodAggregatorNews.MappingProfiles
             CreateMap<LoginModel, ClientDto>();
 
             CreateMap<ClientDto, ClientDataModel>();
+
         }
     }
 }

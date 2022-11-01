@@ -7,7 +7,7 @@
 }
 
 <div class="container" >
-        <a class="btn btn-primary" href="~/comment/createComment/@Model.ArticleId" role="button">Leave a comment</a>
+        @*<a class="btn btn-primary" href="~/comment/createComment/@Model.ArticleId" role="button">Leave a comment</a>*@
 
     <div  class="row">
         @foreach (var comment in Model.Comments)
@@ -15,7 +15,20 @@
             @await Html.PartialAsync("CommentPartialView", comment)
     
         }
-    </div>    
+    </div>   
+    
+        <form asp-controller="Comment" asp-action="CreateComment" method="post">
+        <div class="mb-3">
+            <label for="text" class="form-label">Text</label>
+            <input asp-for="Text" type="text" class="form-control" id="text" required>
+            <span asp-validation-for="Text" class="text-danger"></span>
+        </div>
+    
+        <input type="submit" class="btn btn-primary" value="Submit">
+
+    </form>
+
+
 
     <hr/>
 

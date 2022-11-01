@@ -99,7 +99,9 @@ namespace GoodAggregatorNews.Controllers
                     if (isPasswordCorrect)
                     {
                         await Authenticate(model.Email);
+
                         return RedirectToAction("Index", "Article");
+
                     }
                 }
                 return View(model);
@@ -134,6 +136,7 @@ namespace GoodAggregatorNews.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "Operation: Authenticate was not successful");
+
                 throw;
             }
         }
@@ -150,6 +153,7 @@ namespace GoodAggregatorNews.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "Operation: Logout was not successful");
+
                 throw;
             }
         }

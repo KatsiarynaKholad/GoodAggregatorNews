@@ -13,5 +13,6 @@ namespace GoodAggregatorNews.Core.Abstractions
 
         Task<SourceDto> GetSourceByIdAsync(Guid id);
         Task<int> CreateSourceAsync(SourceDto dto);
-    }
+		Task DeleteSourceAsync(Guid id);
+	}
 }

@@ -82,5 +82,26 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 throw;
             }
         }
+
+        public async Task DeleteSourceAsync(Guid id)
+        {
+			try
+			{
+                var entity = await _unitOfWork.Sources.GetByIdAsync(id);
+
+                if (entity != null)
+                {
+                    _unitOfWork.Sources.Remove(entity);
+
+                    await _unitOfWork.Commit();
+                }
+            }
+            catch (Exception ex)
+			{
+                Log.Error(ex, "Operation: DeleteSourceAsync was not successful");
+                throw;
+			}
+        }
+
     }
 }

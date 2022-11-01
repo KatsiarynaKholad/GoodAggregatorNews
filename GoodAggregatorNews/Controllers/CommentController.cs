@@ -30,7 +30,7 @@ namespace GoodAggregatorNews.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListComments(Guid id)
+        public async Task<IActionResult> ListComments(Guid id)   //??
         {
             try
             {

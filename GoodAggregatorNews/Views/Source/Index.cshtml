@@ -1,0 +1,29 @@
+﻿@model List<SourceModel>
+
+@{
+    ViewData["Title"] = "Sources";
+}
+
+<h1>Sources</h1>
+
+
+<a asp-action="AddSource" asp-controller="Source">Add source</a>
+
+@if (Model.Any())
+{
+    foreach (var item in Model)
+    {
+        
+        
+        <h3>
+              @Html.DisplayFor(modelItem => item.Name)
+          </h3>
+         <h5>
+              @Html.DisplayFor(modelItem => item.Url)
+         </h5>
+
+        <a class="btn btn-danger" href="~/source/DeleteSource/@item.Id">Delete</a> 
+        
+ 
+    }
+}

@@ -1,0 +1,32 @@
+﻿@using GoodAggregatorNews.Core
+@model CreateSourceModel
+
+@{
+	ViewData["Title"] = "Add a source";
+}
+
+<div>
+    <h1>Add a source</h1>
+    
+     <form asp-controller="Source" asp-action="AddSource" method="post" >
+         <div class="mb-3">
+             <label for="name" class="form-label">Name</label>
+             <input asp-for="Name"  class="form-control" id="name" required>
+         </div>
+         <div class="mb-3">
+             <label for="url" class="form-label">Url</label>
+             <input asp-for="Url" class="form-control" id="url">
+         </div>
+         <div class="mb-3">
+             <label for="sourceType" class="form-label">Source Type</label>
+             <select asp-for="SourceType" asp-items="Html.GetEnumSelectList<SourceType>()" id="sourceType">
+             </select>
+         </div>
+
+         <input type="submit" class="btn btn-primary" value="Submit">
+
+    </form>
+
+
+    
+</div>

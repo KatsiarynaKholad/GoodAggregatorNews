@@ -10,7 +10,7 @@ namespace GoodAggregatorNews.MappingProfiles
         public ArticleProfile()
         {
             CreateMap<Article, ArticleDto>();
-            CreateMap<ArticleDto, Article>();   //изменить!
+            CreateMap<ArticleDto, Article>();   
             CreateMap<ArticleDto, ArticleModel>().ReverseMap();
 
         }
