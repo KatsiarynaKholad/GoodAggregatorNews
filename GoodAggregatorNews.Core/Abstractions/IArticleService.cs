@@ -15,5 +15,7 @@ namespace GoodAggregatorNews.Core.Abstractions
         Task<ArticleDto> GetArticleByIdAsync(Guid id);
         Task<int> CreateArticleAsync(ArticleDto dto);
         Task<int> PatchAsync(Guid modelId, List<PatchModel> patchList);
+        Task<List<ArticleDto>> GetArticlesByNameAndSourcesAsync(string? name, Guid? sourceId);
+        Task DeleteArticleAsync(Guid id);
     }
 }

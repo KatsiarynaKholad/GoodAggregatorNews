@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GoodAggregatorNews.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="T:GoodAggregatorNews.WebAPI.Controllers.ArticlesController">
+            <summary>
+            Controller for work with article
+            </summary>
+        </member>
+        <member name="M:GoodAggregatorNews.WebAPI.Controllers.ArticlesController.GetArticleById(System.Guid)">
+            <summary>
+            Get article by specified id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodAggregatorNews.WebAPI.Controllers.ArticlesController.GetAllArticles(GoodAggregatorNews.WebAPI.Models.Requests.GetArticlesRequestModel)">
+            <summary>
+            Get articles by name and source id
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodAggregatorNews.WebAPI.Controllers.ArticlesController.GetAllArticles(GoodAggregatorNews.Core.DataTransferObject.ArticleDto)">
+            <summary>
+            Add article (only Role: Admin)
+            </summary>
+            <param name="dto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GoodAggregatorNews.WebAPI.Controllers.ArticlesController.DeleteArticle(System.Guid)">
+            <summary>
+            Delete article (only Role: Admin)
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

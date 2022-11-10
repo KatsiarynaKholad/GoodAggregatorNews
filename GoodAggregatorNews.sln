@@ -11,9 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodAggregatorNews.Database
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodAggregatorNews.Business", "GoodAggregatorNews.Business\GoodAggregatorNews.Business.csproj", "{3AEFF738-A9DB-4FDF-B71D-8FFDA3239A0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodAggregatorNews.Abstractions", "GoodAggregatorNews.Abstractions\GoodAggregatorNews.Abstractions.csproj", "{119BC27E-DB54-4D45-BB47-50535804F70E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodAggregatorNews.Abstractions", "GoodAggregatorNews.Abstractions\GoodAggregatorNews.Abstractions.csproj", "{119BC27E-DB54-4D45-BB47-50535804F70E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodAggregatorNews.Repositories", "GoodAggregatorNews.Repositories\GoodAggregatorNews.Repositories.csproj", "{5FF9A417-BA4D-45E0-A242-1925212EE0BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodAggregatorNews.Repositories", "GoodAggregatorNews.Repositories\GoodAggregatorNews.Repositories.csproj", "{5FF9A417-BA4D-45E0-A242-1925212EE0BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodAggregatorNews.WebAPI", "GoodAggregatorNews.WebAPI\GoodAggregatorNews.WebAPI.csproj", "{ECE31C46-E892-4FCB-B95C-9A6DFAAF22CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodAggregatorNews.Data.CQS", "GoodAggregatorNews.Data.CQS\GoodAggregatorNews.Data.CQS.csproj", "{61EAB02F-1396-4F45-87F7-55EAD291FA30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{5FF9A417-BA4D-45E0-A242-1925212EE0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FF9A417-BA4D-45E0-A242-1925212EE0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FF9A417-BA4D-45E0-A242-1925212EE0BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECE31C46-E892-4FCB-B95C-9A6DFAAF22CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECE31C46-E892-4FCB-B95C-9A6DFAAF22CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECE31C46-E892-4FCB-B95C-9A6DFAAF22CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECE31C46-E892-4FCB-B95C-9A6DFAAF22CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61EAB02F-1396-4F45-87F7-55EAD291FA30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61EAB02F-1396-4F45-87F7-55EAD291FA30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61EAB02F-1396-4F45-87F7-55EAD291FA30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61EAB02F-1396-4F45-87F7-55EAD291FA30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

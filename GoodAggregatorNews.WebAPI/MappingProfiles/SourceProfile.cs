@@ -3,9 +3,9 @@ using GoodAggregatorNews.Core.DataTransferObject;
 using GoodAggregatorNews.Database.Entities;
 using GoodAggregatorNews.Models;
 
-namespace GoodAggregatorNews.MappingProfiles
+namespace GoodAggregatorNews.WebAPI.MappingProfiles
 {
-    public class SourceProfile  : Profile
+    public class SourceProfile : Profile
     {
         public SourceProfile()
         {
@@ -15,9 +15,9 @@ namespace GoodAggregatorNews.MappingProfiles
             CreateMap<SourceDto, SourceModel>();
 
             CreateMap<CreateSourceModel, SourceDto>()
-                .ForMember(dto=>dto.Id,
-                opt=>
-                opt.MapFrom(art=>Guid.NewGuid()));
+                .ForMember(dto => dto.Id,
+                opt =>
+                opt.MapFrom(art => Guid.NewGuid()));
         }
     }
 }

@@ -87,5 +87,31 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 throw;
             }
         }
+
+        public async Task DeleteCommentAsync(Guid id)
+        {
+            try
+            {
+                if (!Guid.Empty.Equals(id))
+                {
+                    var comment = await _unitOfWork.Comments.GetByIdAsync(id);
+
+                    if (comment!=null)
+                    {
+                        _unitOfWork.Comments.Remove(comment);
+                        await _unitOfWork.Commit();
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Delete comment was not successful");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: DeleteCommentAsync was not successful");
+                throw;
+            }
+        }
     }
 }

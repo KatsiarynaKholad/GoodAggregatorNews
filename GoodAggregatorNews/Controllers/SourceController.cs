@@ -8,7 +8,7 @@ using Serilog;
 
 namespace GoodAggregatorNews.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class SourceController : Controller
     {
         private readonly ISourceService _sourceService;

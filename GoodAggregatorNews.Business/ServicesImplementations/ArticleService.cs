@@ -87,6 +87,35 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
+        public async Task<List<ArticleDto>> GetArticlesByNameAndSourcesAsync(string? name, Guid? sourceId)
+        {
+            try
+            {
+                var entities = _unitOfWork.Articles.Get();
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    entities = entities.Where(dto => dto.Title.Contains(name));
+                }
+
+                if (sourceId != null && !Guid.Empty.Equals(sourceId))
+                {
+                    entities = entities.Where(dto => dto.SourceId.Equals(sourceId));
+                }
+
+                var articles = (await entities.ToListAsync())
+                    .Select(ent=>_mapper.Map<ArticleDto>(ent))
+                    .ToList();
+
+                return articles;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: GetArticlesByNameAndSourcesAsync was not successful");
+                throw;
+            }
+        
+        }
         public async Task<List<ArticleDto>> GetNewArticlesFromExternalSourcesAsync()    //переписать
         {
             var list = new List<ArticleDto>();
@@ -107,6 +136,32 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 Log.Error(ex, "Operation: Patch was not successful");
                 throw;
             }
+        }
+
+        public async Task DeleteArticleAsync(Guid id)
+        {
+            try
+            {
+                if (!Guid.Empty.Equals(id))
+                {
+                    var ent = await _unitOfWork.Articles.GetByIdAsync(id);
+                    if (ent != null)
+                    { 
+                        _unitOfWork.Articles.Remove(ent);
+                        await _unitOfWork.Commit();
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Operation: delete article is not successful");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: DeleteArticleAsync was not successful");
+                throw;
+            }
+        
         }
     }
 }
