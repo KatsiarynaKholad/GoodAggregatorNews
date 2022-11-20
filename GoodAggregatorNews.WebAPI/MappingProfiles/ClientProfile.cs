@@ -2,6 +2,7 @@
 using GoodAggregatorNews.Core.DataTransferObject;
 using GoodAggregatorNews.Database.Entities;
 using GoodAggregatorNews.Models;
+using GoodAggregatorNews.WebAPI.Models.Requests;
 
 namespace GoodAggregatorNews.WebAPI.MappingProfiles
 {
@@ -26,6 +27,8 @@ namespace GoodAggregatorNews.WebAPI.MappingProfiles
             CreateMap<LoginModel, ClientDto>();
 
             CreateMap<ClientDto, ClientDataModel>();
+
+            CreateMap<RegisterClientRequestModel, ClientDto>();
 
         }
     }

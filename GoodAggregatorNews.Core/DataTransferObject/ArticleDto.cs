@@ -10,9 +10,12 @@ namespace GoodAggregatorNews.Core.DataTransferObject
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-        public string ShortDescription { get; set; }
+        public string? ShortDescription { get; set; }
 
-        public string FullText { get; set; }
+        public string? FullText { get; set; }
+        public string SourceUrl { get; set; }
+        public string? Category { get; set; }
         public DateTime PublicationDate { get; set; }
+        public Guid SourceId { get; set; }
     }
 }

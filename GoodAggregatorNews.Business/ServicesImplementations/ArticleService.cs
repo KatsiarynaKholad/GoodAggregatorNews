@@ -4,13 +4,16 @@ using GoodAggregatorNews.Core;
 using GoodAggregatorNews.Core.Abstractions;
 using GoodAggregatorNews.Core.DataTransferObject;
 using GoodAggregatorNews.Database.Entities;
+using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel.Syndication;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace GoodAggregatorNews.Business.ServicesImplementations
 {
@@ -18,11 +21,13 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ParseService _parseService;
 
-        public ArticleService(IMapper mapper, IUnitOfWork unitOfWork)
+        public ArticleService(IMapper mapper, IUnitOfWork unitOfWork, ParseService parseService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _parseService = parseService;
         }
 
         public async Task<int> CreateArticleAsync(ArticleDto dto)
@@ -163,5 +168,76 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         
         }
+
+        public async Task GetAllArticleDataFromRssAsync(Guid sourceId, string? sourceRssUrl)
+        {
+            try
+            {
+                if (!Guid.Empty.Equals(sourceId)&&!string.IsNullOrEmpty(sourceRssUrl))
+                {
+                    var list = new List<ArticleDto>();
+
+                    using (var reader = XmlReader.Create(sourceRssUrl))
+                    {
+                        var feed = SyndicationFeed.Load(reader);
+
+                        foreach (var item in feed.Items)
+                        {
+                            var articleDto = new ArticleDto()
+                            {
+                                Id = Guid.NewGuid(),
+                                Title = item.Title.Text,
+                                PublicationDate = item.PublishDate.UtcDateTime,
+                                ShortDescription = item.Summary?.Text,
+                                Category = item.Categories.FirstOrDefault()?.Name,
+                                SourceId = sourceId,
+                                SourceUrl = item.Id
+                            };
+
+                            list.Add(articleDto);
+                        }
+                    }
+
+                    var oldArticleUrl = await _unitOfWork.Articles.Get()
+                        .Select(art => art.SourceUrl)
+                        .Distinct()
+                        .ToListAsync();
+
+                    var entities = list.Where(dto => !oldArticleUrl.Contains(dto.SourceUrl))
+                        .Select(dto => _mapper.Map<Article>(dto)).ToList();
+
+                    await _unitOfWork.Articles.AddRangeAsync(entities);
+                    await _unitOfWork.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: GetAllArticleDataFromRssAsync was not successful");
+                throw;
+            }
+        }
+
+        public async Task AddArticleTextToArticleAsync()
+        {
+            try
+            {
+                var articlesWithEmptyTextId = _unitOfWork.Articles.Get()
+                   .Where(art => string.IsNullOrEmpty(art.FullText))
+                   .Select(art => art.Id)
+                   .ToList();
+
+                foreach (var articleId in articlesWithEmptyTextId)
+                {
+                     await _parseService.AddArticleTextToArticleAsync(articleId);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: AddArticleTextToArticleAsync was not successful");
+                throw;
+            }
+        }
+
     }
 }

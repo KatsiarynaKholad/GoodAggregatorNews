@@ -12,8 +12,10 @@ namespace GoodAggregatorNews.Core.Abstractions
         Task<bool> IsUserExists(Guid userId);
         Task<bool> CheckUserPassword(string email, string password);
         Task<bool> CheckUserPassword(Guid userId, string password);
-        Task<int> RegisterUser(ClientDto dto);
-        Task<ClientDto> GetUserByEmailAsync(string email);
-
+        Task<int> RegisterUser(ClientDto dto, string password);
+        Task<ClientDto?> GetUserByEmailAsync(string email);
+        Task<IEnumerable<ClientDto>> GetAllUsersAsync();
+        Task DeleteClientAsync(Guid id);
+        Task<bool> IsUserExists(string email);
     }
 }

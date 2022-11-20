@@ -16,10 +16,14 @@ namespace GoodAggregatorNews.WebAPI.Controllers
     public class ArticlesController : ControllerBase
     {
         private readonly IArticleService _articleService;
+        private readonly ISourceService _sourceService;
 
-        public ArticlesController(IArticleService articleService)
+
+        public ArticlesController(IArticleService articleService, 
+            ISourceService sourceService)
         {
             _articleService = articleService;
+            _sourceService = sourceService;
         }
 
         /// <summary>
@@ -77,31 +81,34 @@ namespace GoodAggregatorNews.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Add article (only Role: Admin)
+        /// AddArticles
         /// </summary>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ArticleDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Nullable), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAllArticles(ArticleDto dto)
+        public async Task<IActionResult> AddArticles()
         {
             try
             {
-                var article = await _articleService.CreateArticleAsync(dto);
-                if (article>0)
+                var sources = await _sourceService.GetSourceAsync();
+
+                foreach (var source in sources)
                 {
-                    return Ok(article);
+                    await _articleService.GetAllArticleDataFromRssAsync(source.Id, source.RssUrl);
+                    await _articleService.AddArticleTextToArticleAsync();
                 }
-                return BadRequest();
+
+                return Ok();
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: GetArticleById in ArticleController is not successful");
+                Log.Error(ex, "Operation: AddArticles in ArticleController is not successful");
                 throw;
             }
         }
+
 
         /// <summary>
         /// Delete article (only Role: Admin)

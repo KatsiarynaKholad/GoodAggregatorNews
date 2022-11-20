@@ -47,12 +47,14 @@ namespace GoodAggregatorNews
             builder.Services.AddScoped<ICommentService, CommentService>();
 
 
-            builder.Services.AddScoped<IRepository<Article>, Repository<Article>>();
+            builder.Services.AddScoped<IAdditionArticleRepository, AdditionArticleRepository>();
             builder.Services.AddScoped<IRepository<Source>, Repository<Source>>();
             builder.Services.AddScoped<IRepository<Client>, Repository<Client>>();
             builder.Services.AddScoped<IRepository<Comment>, Repository<Comment>>();
             builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddScoped<ParseService>();
 
             var app = builder.Build();
 

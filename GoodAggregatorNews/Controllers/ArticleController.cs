@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GoodAggregatorNews.Core.Abstractions;
+using GoodAggregatorNews.Core.DataTransferObject;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -13,7 +14,7 @@ namespace GoodAggregatorNews.Controllers
         private readonly IMapper _mapper;
         private readonly int _pageSize = 5;
         public ArticleController(IArticleService articleService,
-            //ISourceService sourceService, 
+            //ISourceService sourceService,
             //ICommentService commentService,
             IMapper mapper)
         {
@@ -70,6 +71,8 @@ namespace GoodAggregatorNews.Controllers
                 return StatusCode(404);
             }
         }
+
+        
 
     }
 }

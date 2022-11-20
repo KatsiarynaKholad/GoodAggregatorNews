@@ -11,7 +11,6 @@ namespace GoodAggregatorNews.WebAPI.MappingProfiles
         {
             CreateMap<Article, ArticleDto>();
             CreateMap<ArticleDto, Article>();
-            CreateMap<ArticleDto, ArticleModel>().ReverseMap();
 
         }
     }

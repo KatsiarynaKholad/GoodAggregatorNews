@@ -45,7 +45,7 @@ namespace GoodAggregatorNews.Controllers
                     if (clientDto != null && clientRoleId != null)
                     {
                         clientDto.RoleId = clientRoleId.Value;
-                        var result = await _clientService.RegisterUser(clientDto);
+                        var result = await _clientService.RegisterUser(clientDto, model.Password);
                         if (result > 0)
                         {
                             await Authenticate(model.Email);

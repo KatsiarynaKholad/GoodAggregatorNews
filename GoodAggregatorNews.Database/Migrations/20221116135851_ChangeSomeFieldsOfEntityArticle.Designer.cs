@@ -4,6 +4,7 @@ using GoodAggregatorNews.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoodAggregatorNews.Database.Migrations
 {
     [DbContext(typeof(GoodAggregatorNewsContext))]
-    partial class GoodAggregatorNewsContextModelSnapshot : ModelSnapshot
+    [Migration("20221116135851_ChangeSomeFieldsOfEntityArticle")]
+    partial class ChangeSomeFieldsOfEntityArticle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,8 +31,8 @@ namespace GoodAggregatorNews.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FullText")
                         .HasColumnType("nvarchar(max)");
@@ -53,9 +56,26 @@ namespace GoodAggregatorNews.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("SourceId");
 
                     b.ToTable("Articles");
+                });
+
+            modelBuilder.Entity("GoodAggregatorNews.Database.Entities.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("GoodAggregatorNews.Database.Entities.Client", b =>
@@ -163,11 +183,17 @@ namespace GoodAggregatorNews.Database.Migrations
 
             modelBuilder.Entity("GoodAggregatorNews.Database.Entities.Article", b =>
                 {
+                    b.HasOne("GoodAggregatorNews.Database.Entities.Category", "Category")
+                        .WithMany("Articles")
+                        .HasForeignKey("CategoryId");
+
                     b.HasOne("GoodAggregatorNews.Database.Entities.Source", "Source")
                         .WithMany("Articles")
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("Source");
                 });
@@ -205,6 +231,11 @@ namespace GoodAggregatorNews.Database.Migrations
             modelBuilder.Entity("GoodAggregatorNews.Database.Entities.Article", b =>
                 {
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("GoodAggregatorNews.Database.Entities.Category", b =>
+                {
+                    b.Navigation("Articles");
                 });
 
             modelBuilder.Entity("GoodAggregatorNews.Database.Entities.Client", b =>

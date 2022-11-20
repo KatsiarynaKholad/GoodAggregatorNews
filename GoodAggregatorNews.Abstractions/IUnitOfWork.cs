@@ -10,7 +10,7 @@ namespace GoodAggregatorNews.Abstractions
 {
     public interface IUnitOfWork
     {
-        IRepository<Article>  Articles { get; }
+        IAdditionArticleRepository Articles { get; }
         IRepository<Role> Roles { get; }
         IRepository<Client> Clients { get; }
         IRepository<Comment> Comments { get; }

@@ -13,7 +13,7 @@ namespace GoodAggregatorNews.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly GoodAggregatorNewsContext _database;
-        public IRepository<Article> Articles { get; }
+        public IAdditionArticleRepository Articles { get; }
 
         public IRepository<Role> Roles { get; }
 
@@ -23,7 +23,7 @@ namespace GoodAggregatorNews.Repositories
 
         public IRepository<Source> Sources { get; }
 
-        public UnitOfWork(GoodAggregatorNewsContext database, IRepository<Article> articles,
+        public UnitOfWork(GoodAggregatorNewsContext database, IAdditionArticleRepository articles,
             IRepository<Role> roles, IRepository<Client> clients,
             IRepository<Comment> comments, IRepository<Source> sources)
         {

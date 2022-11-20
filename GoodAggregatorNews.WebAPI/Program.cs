@@ -5,12 +5,16 @@ using GoodAggregatorNews.Core.Abstractions;
 using GoodAggregatorNews.Database;
 using GoodAggregatorNews.Database.Entities;
 using GoodAggregatorNews.Repositories;
+using GoodAggregatorNews.WebAPI.Utils;
 using Hangfire;
 using Hangfire.SqlServer;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
+using System.Text;
 
 namespace GoodAggregatorNews.WebAPI
 {
@@ -60,12 +64,16 @@ namespace GoodAggregatorNews.WebAPI
             builder.Services.AddScoped<ICommentService, CommentService>();
 
 
-            builder.Services.AddScoped<IRepository<Article>, Repository<Article>>();
+            builder.Services.AddScoped<IAdditionArticleRepository, AdditionArticleRepository>();
             builder.Services.AddScoped<IRepository<Source>, Repository<Source>>();
             builder.Services.AddScoped<IRepository<Client>, Repository<Client>>();
             builder.Services.AddScoped<IRepository<Comment>, Repository<Comment>>();
             builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddScoped<ParseService>();
+
+            builder.Services.AddScoped<IJwtUtil, JwtUtilSha256>();
 
             //add mediatr
 
@@ -75,19 +83,41 @@ namespace GoodAggregatorNews.WebAPI
                 opt.IncludeXmlComments(builder.Configuration["XmlDoc"]);
             });
 
+            builder.Services
+                .AddAuthentication(opt =>
+                {
+                    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opt =>
+                {
+                    opt.RequireHttpsMetadata = false;
+                    opt.SaveToken = true;
+                    opt.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidIssuer = builder.Configuration["Token:Issuer"],
+                        ValidAudience = builder.Configuration["Token:Issuer"],
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:JwtToken"])),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseStaticFiles();
+            app.UseHangfireDashboard();
+            app.UseRouting();
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.MapHangfireDashboard();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllers();
 
