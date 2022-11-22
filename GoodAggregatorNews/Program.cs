@@ -54,7 +54,7 @@ namespace GoodAggregatorNews
             builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            builder.Services.AddScoped<ParseService>();
+            builder.Services.AddScoped<IParseService, ParseService>();
 
             var app = builder.Build();
 

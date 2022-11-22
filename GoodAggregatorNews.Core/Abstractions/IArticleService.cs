@@ -10,8 +10,6 @@ namespace GoodAggregatorNews.Core.Abstractions
     public interface IArticleService
     {
         Task<List<ArticleDto>> GetArticlesByPageNumberAndPageSizeAsync(int pageNumber, int pageSize);
-
-        Task<List<ArticleDto>> GetNewArticlesFromExternalSourcesAsync();
         Task<ArticleDto> GetArticleByIdAsync(Guid id);
         Task<int> CreateArticleAsync(ArticleDto dto);
         Task<int> PatchAsync(Guid modelId, List<PatchModel> patchList);
@@ -19,5 +17,6 @@ namespace GoodAggregatorNews.Core.Abstractions
         Task DeleteArticleAsync(Guid id);
         Task GetAllArticleDataFromRssAsync(Guid sourceId, string? sourceRssUrl);
         Task AddArticleTextToArticleAsync();
+        Task AggregateArticlesFromExternalSourceAsync();
     }
 }

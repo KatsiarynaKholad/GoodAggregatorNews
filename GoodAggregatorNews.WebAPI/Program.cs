@@ -5,6 +5,7 @@ using GoodAggregatorNews.Core.Abstractions;
 using GoodAggregatorNews.Database;
 using GoodAggregatorNews.Database.Entities;
 using GoodAggregatorNews.Repositories;
+using GoodAggregatorNews.WebAPI.Filters;
 using GoodAggregatorNews.WebAPI.Utils;
 using Hangfire;
 using Hangfire.SqlServer;
@@ -45,8 +46,8 @@ namespace GoodAggregatorNews.WebAPI
                     .UseSqlServerStorage(connectionString,
              new SqlServerStorageOptions
                     {
-                        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                        CommandBatchMaxTimeout = TimeSpan.FromMinutes(30),
+                        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(30),
                         QueuePollInterval = TimeSpan.Zero,
                         UseRecommendedIsolationLevel = true,
                         DisableGlobalLocks = true,
@@ -71,7 +72,7 @@ namespace GoodAggregatorNews.WebAPI
             builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            builder.Services.AddScoped<ParseService>();
+            builder.Services.AddScoped<IParseService, ParseService>();
 
             builder.Services.AddScoped<IJwtUtil, JwtUtilSha256>();
 
@@ -107,7 +108,11 @@ namespace GoodAggregatorNews.WebAPI
             var app = builder.Build();
 
             app.UseStaticFiles();
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new AuthorizationFilter() }
+            });
+
             app.UseRouting();
 
             app.UseHttpsRedirection();

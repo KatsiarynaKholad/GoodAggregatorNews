@@ -81,7 +81,7 @@ namespace GoodAggregatorNews.WebAPI.Controllers
         }
 
         /// <summary>
-        /// AddArticles
+        /// Add Articles (only Role: Admin)
         /// </summary>
         /// <returns></returns>
         [HttpPost]

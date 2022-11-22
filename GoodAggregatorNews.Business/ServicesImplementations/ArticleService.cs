@@ -21,9 +21,11 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ParseService _parseService;
+        private readonly IParseService _parseService;
 
-        public ArticleService(IMapper mapper, IUnitOfWork unitOfWork, ParseService parseService)
+        public ArticleService(IMapper mapper, 
+            IUnitOfWork unitOfWork, 
+            IParseService parseService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -72,7 +74,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        public async Task<List<ArticleDto>> GetArticlesByPageNumberAndPageSizeAsync(int pageNumber, int pageSize)
+        public async Task<List<ArticleDto>> GetArticlesByPageNumberAndPageSizeAsync(int pageNumber, int pageSize = 1)
         {
             try
             {
@@ -92,6 +94,28 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
+        public async Task AggregateArticlesFromExternalSourceAsync()
+        {
+            try
+            {
+                var sources = await _unitOfWork.Sources.GetAllAsync();
+
+                if (sources.Any())
+                {
+                    foreach (var source in sources)
+                    {
+                        await GetAllArticleDataFromRssAsync(source.Id, source?.RssUrl);
+                        await AddArticleTextToArticleAsync();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: AggregateArticlesFromExternalSource was not successful");
+                throw;
+            }
+        }
         public async Task<List<ArticleDto>> GetArticlesByNameAndSourcesAsync(string? name, Guid? sourceId)
         {
             try
@@ -120,11 +144,6 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 throw;
             }
         
-        }
-        public async Task<List<ArticleDto>> GetNewArticlesFromExternalSourcesAsync()    //переписать
-        {
-            var list = new List<ArticleDto>();
-            return list;
         }
 
         public async Task<int> PatchAsync(Guid modelId, List<PatchModel> patchList)
