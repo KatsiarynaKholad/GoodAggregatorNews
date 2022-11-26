@@ -75,14 +75,12 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        public async Task<List<ArticleDto>> GetArticlesByPageNumberAndPageSizeAsync(int pageNumber, int pageSize = 1)
+        public async Task<List<ArticleDto>> GetArticlesByPageNumberAndPageSizeAsync()
         {
             try
             {
                 var list = await _unitOfWork.Articles
                     .Get()
-                    .Skip(pageSize * pageNumber)
-                    .Take(pageSize)
                     .Select(article => _mapper.Map<ArticleDto>(article))
                     .ToListAsync();
 

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GoodAggregatorNews.Business.ServicesImplementations
@@ -34,7 +35,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
 
                     var nodes =
                        htmldoc.DocumentNode.Descendants(0)
-                       .Where(n => n.HasClass("article"));
+                       .Where(n => n.HasClass("article__body"));
 
                     if (nodes.Any())
                     {
@@ -42,18 +43,17 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                            .ChildNodes
                            .Where(node => (node.HasClass("article__container")
                            || node.Name.Equals("h1")
+                           || node.Name.Equals("figure")
                            || node.Name.Equals("p"))
                                    && !node.HasClass("article__reference")
-                                   && !node.HasClass("global-incut")
-                                   && !node.HasClass("card")
-                                   && !node.HasClass("custom-block")
-                                   && !node.HasClass("article-meta")
-                                   && !node.HasClass("modal fade")
+                                   && !node.Name.Equals("script")
                                    && node.Attributes["style"] == null)
                            .Select(node => node.InnerText.Trim())
                            .Aggregate((i, j) => i + Environment.NewLine + j);
 
-                        await _unitOfWork.Articles.UpdateArticleTextAsync(articleid, articleText);
+                        var text = articleText.Replace("&nbsp;", " ");
+
+                        await _unitOfWork.Articles.UpdateArticleTextAsync(articleid, text);
                         await _unitOfWork.Commit();
 
                     }
@@ -68,6 +68,48 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
+        //public async Task AddArticleTextToArticleAsync(Guid articleid)
+        //{
+        //    try
+        //    {
+        //        var article = await _unitOfWork.Articles.GetByIdAsync(articleid);
+        //        if (article != null)
+        //        {
+        //            var articleSourceUrl = article.SourceUrl;
+        //            var web = new HtmlWeb();
+
+        //            var htmlDoc = web.LoadFromWebAsync(articleSourceUrl);
+
+        //            var htmlDocResult = htmlDoc.Result;
+
+        //            var node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='island']");
+
+        //            //if (node == null)
+        //            //{
+        //            //    node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='content-box']");
+        //            //}
+
+        //            if (node != null)
+        //            {
+        //                node.InnerHtml = node.InnerHtml.Replace("<div class=\"article-meta article-meta_semibold\">",
+        //                    "<div class=\"article-meta article-meta_semibold\" style=\"display: none;\">");
+        //                //node.InnerHtml = node.InnerHtml.Replace("<ul", "<text");
+        //                //node.InnerHtml = node.InnerHtml.Replace("</ul", "</text");
+
+
+        //                await _unitOfWork.Articles.UpdateArticleTextAsync(articleid, node.InnerText);
+        //                await _unitOfWork.Commit();
+        //            }
+
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Log.Error(e, "AddArticleTextToArticleAsync was not successful");
+        //        throw;
+        //    }
+
+        //}
 
     }
 }

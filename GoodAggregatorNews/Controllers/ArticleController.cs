@@ -12,7 +12,6 @@ namespace GoodAggregatorNews.Controllers
         //private readonly ISourceService _sourceService;
         //private readonly ICommentService _commentService;
         private readonly IMapper _mapper;
-        private readonly int _pageSize = 5;
         public ArticleController(IArticleService articleService,
             //ISourceService sourceService,
             //ICommentService commentService,
@@ -25,12 +24,12 @@ namespace GoodAggregatorNews.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int page)
+        public async Task<IActionResult> Index()
         {
             try
             {
                 var articles = await _articleService
-                    .GetArticlesByPageNumberAndPageSizeAsync(page, _pageSize);
+                    .GetArticlesByPageNumberAndPageSizeAsync();       
 
                 if (articles.Any())
                 {
