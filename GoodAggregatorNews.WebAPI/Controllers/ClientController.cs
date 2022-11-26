@@ -109,7 +109,7 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                     var res = await _clientService.RegisterUser(dto, model.Password);
                     if (res>0)
                     {
-                        var clientInDb = await _clientService.GetUserByEmailAsync(dto.Email);
+                        var clientInDb = await _clientService.GetClientByEmailAsync(dto.Email);
                         var response = _jwtUtil.GenerateToken(clientInDb);
                     }
                     return Ok();

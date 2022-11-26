@@ -10,6 +10,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.ServiceModel.Syndication;
 using System.Text;
 using System.Threading.Tasks;
@@ -188,11 +189,84 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
         
         }
 
-        public async Task GetAllArticleDataFromRssAsync(Guid sourceId, string? sourceRssUrl)
+        public async Task GetAllArticleDataFromRssAsync()
         {
             try
             {
-                if (!Guid.Empty.Equals(sourceId)&&!string.IsNullOrEmpty(sourceRssUrl))
+                var sources = await _unitOfWork.Sources.GetAllAsync();
+                Parallel.ForEach(sources, (source) => GetAllArticleDataFromRssAsync(source.Id, source.RssUrl)
+                .Wait());
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: GetAllArticleDataFromRss was not successful");
+                throw;
+            }
+        }
+
+        public async Task AddArticleTextToArticleAsync()
+        {
+            try
+            {
+                var articlesWithEmptyTextId = _unitOfWork.Articles.Get()
+                   .Where(art => string.IsNullOrEmpty(art.FullText))
+                   .Select(art => art.Id)
+                   .ToList();
+
+                foreach (var articleId in articlesWithEmptyTextId)
+                {
+                     await _parseService.AddArticleTextToArticleAsync(articleId);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: AddArticleTextToArticleAsync was not successful");
+                throw;
+            }
+        }
+
+        private async Task RateArticlesAsync(Guid articleId)
+        {
+            try
+            {
+                if (!Guid.Empty.Equals(articleId))
+                {
+                    var article = await _unitOfWork.Articles.GetByIdAsync(articleId);
+                    if (article!=null)
+                    {
+                        using (var client = new HttpClient())
+                        {
+                            var httpRequest = new HttpRequestMessage(HttpMethod.Post,
+                                new Uri(@"http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=6c70e0796fde0b04d1a524b084f47b412229b7d8"));
+
+                            httpRequest.Headers.Add("Accept", "application/json");
+
+                            httpRequest.Content = JsonContent.Create(new TextRequestModel[]
+                                { new TextRequestModel() {Text = article.FullText}});
+
+                            var response = await client.SendAsync(httpRequest);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Article doesn't exist");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: RateArticles was not successful");
+                throw;
+            }
+        
+        }
+        private async Task GetAllArticleDataFromRssAsync(Guid sourceId, string? sourceRssUrl)
+        {
+            try
+            {
+                if (!Guid.Empty.Equals(sourceId) && !string.IsNullOrEmpty(sourceRssUrl))
                 {
                     var list = new List<ArticleDto>();
 
@@ -236,27 +310,6 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        public async Task AddArticleTextToArticleAsync()
-        {
-            try
-            {
-                var articlesWithEmptyTextId = _unitOfWork.Articles.Get()
-                   .Where(art => string.IsNullOrEmpty(art.FullText))
-                   .Select(art => art.Id)
-                   .ToList();
-
-                foreach (var articleId in articlesWithEmptyTextId)
-                {
-                     await _parseService.AddArticleTextToArticleAsync(articleId);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Operation: AddArticleTextToArticleAsync was not successful");
-                throw;
-            }
-        }
 
     }
 }

@@ -1,0 +1,9 @@
+﻿@model CommentsListWithArticle
+@{
+    Layout = null;
+}
+
+<div class="row container">
+      <partial name="WriteComment", model="@(new CreateComment() {ArticleId = Model.ArticleId})"></partial>
+
+</div>

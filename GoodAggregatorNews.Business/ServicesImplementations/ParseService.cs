@@ -40,15 +40,16 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                     {
                         var articleText = nodes.FirstOrDefault()?
                            .ChildNodes
-                           .Where(node => (node.Name.Equals("div")
+                           .Where(node => (node.HasClass("article__container")
                            || node.Name.Equals("h1")
                            || node.Name.Equals("p"))
-                                       && !node.HasClass("article__reference")
-                                       && !node.HasClass("global-incut")
-                                       && !node.HasClass("card")
-                                       && !node.HasClass("custom-block")
-                                       && !node.HasClass("article-meta")
-                           && node.Attributes["span class='article - meta'"] == null)
+                                   && !node.HasClass("article__reference")
+                                   && !node.HasClass("global-incut")
+                                   && !node.HasClass("card")
+                                   && !node.HasClass("custom-block")
+                                   && !node.HasClass("article-meta")
+                                   && !node.HasClass("modal fade")
+                                   && node.Attributes["style"] == null)
                            .Select(node => node.InnerText.Trim())
                            .Aggregate((i, j) => i + Environment.NewLine + j);
 
@@ -66,5 +67,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 throw;
             }
         }
+
+
     }
 }

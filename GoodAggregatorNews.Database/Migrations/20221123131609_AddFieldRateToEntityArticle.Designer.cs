@@ -4,6 +4,7 @@ using GoodAggregatorNews.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoodAggregatorNews.Database.Migrations
 {
     [DbContext(typeof(GoodAggregatorNewsContext))]
-    partial class GoodAggregatorNewsContextModelSnapshot : ModelSnapshot
+    [Migration("20221123131609_AddFieldRateToEntityArticle")]
+    partial class AddFieldRateToEntityArticle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

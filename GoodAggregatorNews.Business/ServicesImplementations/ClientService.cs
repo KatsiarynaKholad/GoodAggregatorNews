@@ -64,7 +64,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        public async Task<ClientDto?> GetUserByEmailAsync(string email)
+        public async Task<ClientDto?> GetClientByEmailAsync(string email)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: GetUserByEmailAsync was not successful");
+                Log.Error(ex, "Operation: GetClientByEmailAsync was not successful");
                 throw;
             }
         }

@@ -67,7 +67,7 @@ namespace GoodAggregatorNews.Controllers
         {
             try
             {
-                var clientdDto = await _clientService.GetUserByEmailAsync(email);
+                var clientdDto = await _clientService.GetClientByEmailAsync(email);
 
                 if (clientdDto != null)
                 {
@@ -117,7 +117,7 @@ namespace GoodAggregatorNews.Controllers
         {
             try
             {
-                var userDto = await _clientService.GetUserByEmailAsync(email);
+                var userDto = await _clientService.GetClientByEmailAsync(email);
 
                 var claims = new List<Claim>()
                 {
@@ -168,7 +168,7 @@ namespace GoodAggregatorNews.Controllers
                 return BadRequest();
             }
 
-            var client = _mapper.Map<ClientDataModel>(await _clientService.GetUserByEmailAsync(clientEmail));
+            var client = _mapper.Map<ClientDataModel>(await _clientService.GetClientByEmailAsync(clientEmail));
             return Ok(client);
         }
 
@@ -195,7 +195,7 @@ namespace GoodAggregatorNews.Controllers
                     return BadRequest();
                 }
 
-                var user = _mapper.Map<ClientDataModel>(await _clientService.GetUserByEmailAsync(userEmail));
+                var user = _mapper.Map<ClientDataModel>(await _clientService.GetClientByEmailAsync(userEmail));
                 return View(user);
             }
 

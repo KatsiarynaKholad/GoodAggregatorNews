@@ -13,6 +13,8 @@ namespace GoodAggregatorNews.Database.Entities
         public string? ShortDescription { get; set; }
 
         public string? FullText { get; set; }
+        public double? Rate { get; set; }
+
         public DateTime PublicationDate { get; set; }
         public string SourceUrl { get; set; }
 

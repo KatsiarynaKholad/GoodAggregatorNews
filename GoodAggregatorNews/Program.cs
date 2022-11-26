@@ -76,7 +76,7 @@ namespace GoodAggregatorNews
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Article}/{action=Index}/{id?}");
 
             app.Run();
         }

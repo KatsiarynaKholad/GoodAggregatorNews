@@ -1,0 +1,18 @@
+﻿@model CreateComment
+@{
+    Layout = null;
+}
+
+@{
+    ViewData["Title"] = "Write a comment";
+}
+
+<div>
+    <form asp-controller="Comment" asp-action="CreateComment" method="post">
+         <input type="hidden"  asp-for="ArticleId" value="@Model.ArticleId" />
+         <div class="row">
+        <textarea type="text" asp-for="Text" placeholder="Write a comment"></textarea>
+      <input type="submit" class="btn btn-primary" value="Submit">
+
+    </form>
+</div>

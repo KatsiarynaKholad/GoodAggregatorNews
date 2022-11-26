@@ -17,20 +17,24 @@ namespace GoodAggregatorNews.Controllers
         private readonly IClientService _clientService;
         private readonly IRoleService _roleService;
         private readonly IArticleService _articleService;
+        private readonly IMapper _mapper;
+
 
         public CommentController(ICommentService commentService,
                 IClientService clientService,
                 IRoleService roleService,
-                IArticleService articleService)
+                IArticleService articleService,
+                IMapper mapper)
         {
             _commentService = commentService;
             _clientService = clientService;
             _roleService = roleService;
             _articleService = articleService;
+            _mapper= mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListComments(Guid id)   //??
+        public async Task<IActionResult> ListComments(Guid id)   
         {
             try
             {
@@ -56,60 +60,50 @@ namespace GoodAggregatorNews.Controllers
 
 
         [HttpGet]
-        public IActionResult CreateComment(Guid id)       //??
-        {
-            return View();
-        }
-
-        //[HttpGet]
-        //public async Task<IActionResult> CreateComment(Guid id)       
-        //{
-        //    try
-        //    {
-        //        if (id != Guid.Empty)
-        //        {
-        //            var comments = await _commentService.FindCommentsByArticleIdAsync(id);
-        //            if (HttpContext.User.Identity.Name != null)
-        //            {
-        //                var clientEmail = HttpContext.User.Identity.Name;
-        //                var client = await _clientService.GetUserByEmailAsync(clientEmail);
-        //                var roleName = await _roleService.GetRoleNameById(client.RoleId);
-
-        //                return View(new CommentsListWithArticle
-        //                {
-        //                    ArticleId = id,
-        //                    Comments = comments
-        //                });
-        //            }
-        //            else
-        //            {
-        //                return Ok();
-        //            }
-        //        }
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, "Operation: CreateComment is not successful");
-        //        return Ok();
-        //    }
-
-        //}
-
-
-
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> CreateComment(CreateComment comment)    //??
+        public async Task<IActionResult> CreateCommentPartial(Guid articleId)
         {
             try
             {
-                var clientEmail = HttpContext.User.Identity.Name;
-
-                if (clientEmail != null)
+                if (articleId != Guid.Empty)
                 {
-                    var client = await _clientService.GetUserByEmailAsync(clientEmail);
+                    var comments = await _commentService.FindCommentsByArticleIdAsync(articleId);
+                    if (HttpContext.User.Identity.Name != null)
+                    {
+                        var clientEmail = HttpContext.User.Identity.Name;
+                        var client = await _clientService.GetClientByEmailAsync(clientEmail);
+                        var roleName = await _roleService.GetRoleNameById(client.RoleId);
+
+                        return View(new CommentsListWithArticle
+                        {
+                            ArticleId = articleId,
+                            Comments = comments
+                        });
+                    }
+                    
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: CreateComment is not successful");
+                return Ok();
+            }
+
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreateComment(CreateComment comment)    
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                  
+                    var clientEmail = HttpContext.User.Identity.Name;
+                                       
+                    var client = await _clientService.GetClientByEmailAsync(clientEmail);
+
                     var roleName = await _roleService.GetRoleNameById(client.RoleId);
 
                     CommentDto commentDto = new CommentDto()
@@ -123,11 +117,8 @@ namespace GoodAggregatorNews.Controllers
                     };
 
                     await _commentService.AddCommentAsync(commentDto);
-
-                    return Ok();
-
+                    return RedirectToAction("Index", "Comment", new { articleId = comment.ArticleId });
                 }
-
                 else
                 {
                     return BadRequest();
@@ -140,9 +131,29 @@ namespace GoodAggregatorNews.Controllers
             }
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(Guid articleId)
         {
-            return View();
+            try
+            {
+                var comments = await _commentService.FindCommentsByArticleIdAsync(articleId);
+                if (comments!=null)
+                {
+                    var commentsList = new CommentsListWithArticle
+                    {
+                        Comments = comments,
+                        ArticleId = articleId
+                    };
+
+                    return View(commentsList);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation was not successful");
+                throw;
+            }
         }
     }
 }

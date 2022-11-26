@@ -38,7 +38,7 @@ namespace GoodAggregatorNews.WebAPI.Controllers
         {
             try
             {
-                var client = await _clietnService.GetUserByEmailAsync(requestModel.Email);
+                var client = await _clietnService.GetClientByEmailAsync(requestModel.Email);
                 if (client != null)
                 {
                     var isPasswordCorrect = await _clietnService.CheckUserPassword(requestModel.Email, 

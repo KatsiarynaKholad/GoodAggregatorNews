@@ -1,6 +1,7 @@
 ﻿using GoodAggregatorNews.Core.Abstractions;
 using GoodAggregatorNews.Core.DataTransferObject;
 using GoodAggregatorNews.WebAPI.Models.Requests;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -94,13 +95,21 @@ namespace GoodAggregatorNews.WebAPI.Controllers
             {
                 var sources = await _sourceService.GetSourceAsync();
 
-                foreach (var source in sources)
+                if (sources.Any())
                 {
-                    await _articleService.GetAllArticleDataFromRssAsync(source.Id, source.RssUrl);
-                    await _articleService.AddArticleTextToArticleAsync();
-                }
+                    foreach (var source in sources)
+                    {
+                        await _articleService.GetAllArticleDataFromRssAsync();
+                        await _articleService.AddArticleTextToArticleAsync();
+                        //RecurringJob.AddOrUpdate(()=>_articleService.GetAllArticleDataFromRssAsync(),
+                        //    "*/20 * * * *");
+                        //RecurringJob.AddOrUpdate(() => _articleService.AddArticleTextToArticleAsync(),
+                        //    "*/30 * * * *");
+                    }
 
-                return Ok();
+                    return Ok();
+                }
+                return BadRequest();
             }
             catch (Exception ex)
             {
