@@ -3,33 +3,64 @@
 	ViewData["Title"] = "Register";
 }
 
+    <link href="~/css/register.css" />
+
+
+<body style="background-color:white; z-index:4" >
 <div>
     <h1>Register</h1>
-    <form asp-controller="Account" asp-action="Register" method="post">
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
+    <!-- Section: Design Block -->
+<section class=" text-center text-lg-start">
+  <div class="card mb-3">
+    <div class="row g-0 d-flex align-items-center">
+      <div class="col-lg-4 d-none d-lg-flex">
+        <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" alt="Trendy Pants and Shoes"
+          class="w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
+      </div>
+      <div class="col-lg-8">
+        <div class="card-body py-5 px-md-5">
+
+          <form asp-controller="Account" asp-action="Register" method="post">
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+             <label for="email" class="form-label">Email</label>
           <input asp-for="Email" type="email" class="form-control" id="email" required>
            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-         <div class="mb-3">
-          <label for="name" class="form-label">Name</label>
+            </div>
+             <!-- Name input -->
+            <div class="form-outline mb-4">
+              <label for="name" class="form-label">Name</label>
           <input asp-for="Name" asp-for="name" class="form-control" id="name">
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
+            </div>
+
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+              <label for="password" class="form-label">Password</label>
           <input type="password" asp-for="Password" class="form-control" id="password">
            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-          <label for="password-confirmation" class="form-label">Password Confirmation</label>
+            </div>
+
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+               <label for="password-confirmation" class="form-label">Password Confirmation</label>
           <input type="password" asp-for="PasswordConfirmation" class="form-control" id="password-confirmation">
            <span asp-validation-for="PasswordConfirmation" class="text-danger"></span>
+            </div>
+
+          
+
+            <!-- Submit button -->
+            <input type="submit" class="btn btn-primary" value="Submit">
+
+          </form>
+
         </div>
-
-        <input type="submit" class="btn btn-primary" value="Submit">
-
-    </form>
+      </div>
+    </div>
+  </div>
+</section>
 </div>
+</body>
 
 @section Scripts
 {

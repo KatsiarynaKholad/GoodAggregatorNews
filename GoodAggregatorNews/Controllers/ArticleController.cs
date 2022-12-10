@@ -9,18 +9,9 @@ namespace GoodAggregatorNews.Controllers
     public class ArticleController : Controller
     {
         private readonly IArticleService _articleService;
-        //private readonly ISourceService _sourceService;
-        //private readonly ICommentService _commentService;
-        private readonly IMapper _mapper;
-        public ArticleController(IArticleService articleService,
-            //ISourceService sourceService,
-            //ICommentService commentService,
-            IMapper mapper)
+        public ArticleController(IArticleService articleService)
         {
             _articleService = articleService;
-            //_sourceService = sourceService;
-            //_commentService = commentService;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -33,7 +24,8 @@ namespace GoodAggregatorNews.Controllers
 
                 if (articles.Any())
                 {
-                    var sortedArticles = articles.OrderByDescending(a => a.PublicationDate)
+                    var sortedArticles = articles.OrderByDescending(art=>art.Rate)
+                        .ThenByDescending(a => a.PublicationDate)
                         .ToList();
 
                     return View(sortedArticles);

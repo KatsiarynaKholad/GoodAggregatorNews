@@ -31,35 +31,35 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
 
                     var web = new HtmlWeb();
 
-                    var htmldoc = web.Load(articleSourceUrl);
+                    var htmlDoc = web.Load(articleSourceUrl);
 
                     var nodes =
-                       htmldoc.DocumentNode.Descendants(0)
+                       htmlDoc.DocumentNode.Descendants(0)
                        .Where(n => n.HasClass("article__body"));
 
                     if (nodes.Any())
                     {
-                        var articleText = nodes.FirstOrDefault()?
-                           .ChildNodes
-                           .Where(node => (node.HasClass("article__container")
-                           || node.Name.Equals("h1")
-                           || node.Name.Equals("figure")
-                           || node.Name.Equals("p"))
-                                   && !node.HasClass("article__reference")
-                                   && !node.Name.Equals("script")
-                                   && node.Attributes["style"] == null)
-                           .Select(node => node.InnerText.Trim())
-                           .Aggregate((i, j) => i + Environment.NewLine + j);
+                        var articleText = (nodes.FirstOrDefault()?.ChildNodes
+                           .Where(node => node.HasClass("article__container")))?
+                           .FirstOrDefault()?.ChildNodes
+                                .Where(node => node.Name.Equals("p")
+                                    || node.Name.Equals("h2")
+                                    || node.Name.Equals("h4")
+                                    || node.Name.Equals("h3")
+                                    || node.Name.Equals("ul")
+                                    || node.Name.Equals("ol")
+                                    || node.Name.Equals("li")
+                                    || (node.Name.Equals("figure")
+                                    && !node.HasClass("incut") 
+                                    && !node.HasClass("global-incut")))
+                                .Select(node => node.OuterHtml.Trim())
+                                .Aggregate((i, j) => i + Environment.NewLine + j);
 
-                        var text = articleText.Replace("&nbsp;", " ");
 
-                        await _unitOfWork.Articles.UpdateArticleTextAsync(articleid, text);
+                        await _unitOfWork.Articles.UpdateArticleTextAsync(articleid, articleText);
                         await _unitOfWork.Commit();
-
                     }
-
                 }
-
             }
             catch (Exception ex)
             {
@@ -67,6 +67,5 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 throw;
             }
         }
-
     }
 }

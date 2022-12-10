@@ -11,6 +11,7 @@ namespace GoodAggregatorNews.Abstractions.Repositories
 {
     public interface IAdditionArticleRepository : IRepository<Article>
     {
-       Task UpdateArticleTextAsync (Guid id, string text);
+        Task UpdateArticleRateByIdAsync(Guid articleId, double rate);
+        Task UpdateArticleTextAsync (Guid id, string text);
     }
 }

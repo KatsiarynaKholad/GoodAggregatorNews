@@ -2,27 +2,36 @@
 @{
 	ViewData["Title"] = "Login";
 }
-
-<div>
-    <h1>Login</h1>
-    <form asp-controller="Account" asp-action="Login" method="post">
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input asp-for="Email" type="email" class="form-control" id="email" required>
-           <span asp-validation-for="Email" class="text-danger"></span>
+<div id="img">
+<div class="container-fluid px-1 py-5 mx-auto">
+    <div class="row d-flex justify-content-center">
+        <div class="col-xl-7 col-lg-8 col-md-9 col-11 text-center">
+            <h1>Login</h1>
+            <div class="card">
+                <h5 class="text-center mb-4">Please enter your email and password</h5>
+                <form asp-controller="Account" asp-action="Login" method="post">
+                    <div class="row justify-content-between text-left">
+                        <label for="email" class="form-label">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" id="email" required>
+                        <span asp-validation-for="Email" class="text-danger"></span>                    </div>
+                    <div class="row justify-content-between text-left">
+                         <label for="password" class="form-label">Password</label>
+                         <input type="password" asp-for="Password" class="form-control" id="password">
+                         <span asp-validation-for="Password" class="text-danger"></span>                    </div>
+                       <div class="row justify-content-end">
+                        <div class="form-group col-sm-6"> <button type="submit" class="btn-block btn-primary" >Submit</button> </div>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" asp-for="Password" class="form-control" id="password">
-           <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
-
-        <input type="submit" class="btn btn-primary" value="Submit">
-    </form>
+    </div>
+</div>
 </div>
 
 @section Scripts
 {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+
 }

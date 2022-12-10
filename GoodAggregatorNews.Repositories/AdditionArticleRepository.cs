@@ -35,5 +35,22 @@ namespace GoodAggregatorNews.Repositories
                 throw;
             }
         }
+
+        public async Task UpdateArticleRateByIdAsync(Guid articleId, double rate)
+        {
+            try
+            {
+                var article = await DbSet.FirstOrDefaultAsync(art => art.Id.Equals(articleId));
+                if (article != null)
+                {
+                    article.Rate = rate;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: UpdateArticleRateByIdAsync was not successful");
+                throw;
+            }
+        }
     }
 }

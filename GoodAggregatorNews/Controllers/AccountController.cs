@@ -49,7 +49,7 @@ namespace GoodAggregatorNews.Controllers
                         if (result > 0)
                         {
                             await Authenticate(model.Email);
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Article");
                         }
                     }
                 }
@@ -148,7 +148,7 @@ namespace GoodAggregatorNews.Controllers
             {
                 await HttpContext.SignOutAsync();
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Register", "Account");
             }
             catch (Exception ex)
             {

@@ -18,5 +18,6 @@ namespace GoodAggregatorNews.Core.Abstractions
         Task GetAllArticleDataFromRssAsync();
         Task AddArticleTextToArticleAsync();
         Task AggregateArticlesFromExternalSourceAsync();
+        Task AddRateToArticlesAsync();
     }
 }

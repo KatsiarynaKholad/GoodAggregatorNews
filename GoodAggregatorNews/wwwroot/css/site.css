@@ -16,3 +16,191 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+#img {
+    color: #000;
+    overflow-x: hidden;
+    height: 100%;
+    background-image: url("https://i.imgur.com/GMmCQHC.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%
+}
+
+.card {
+    padding: 30px 40px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    border: none !important;
+    box-shadow: 0 6px 12px 0 rgba(0,0,0,0.2)
+}
+
+.blue-text {
+    color: #00BCD4
+}
+
+.form-control-label {
+    margin-bottom: 0
+}
+
+input, textarea, button {
+    padding: 8px 15px;
+    border-radius: 5px !important;
+    margin: 5px 0px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    font-size: 18px !important;
+    font-weight: 300
+}
+
+    input:focus, textarea:focus {
+        -moz-box-shadow: none !important;
+        -webkit-box-shadow: none !important;
+        box-shadow: none !important;
+        border: 1px solid #00BCD4;
+        outline-width: 0;
+        font-weight: 400
+    }
+
+.btn-block {
+    text-transform: uppercase;
+    font-size: 15px !important;
+    font-weight: 400;
+    height: 43px;
+    cursor: pointer
+}
+
+    .btn-block:hover {
+        color: #fff !important
+    }
+
+button:focus {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    outline-width: 0
+}
+
+.card2 {
+    padding: 20px 20px;
+    margin-bottom: 15px;
+    border: none !important;
+    box-shadow: 0 6px 12px 0 rgba(0,0,0,0.2)
+}
+
+.wp-block.property.list {
+    border: 1px solid #e0eded;
+    margin-bottom: 15px !important;
+}
+
+.wp-block {
+    margin: 0 0 15px 0;
+    -webkit-transition: all .3s linear;
+    transition: all .3s linear;
+    position: relative;
+    cursor: default;
+    border-radius: 2px;
+}
+
+    .wp-block.property.list {
+        padding: 15px 15px 0 15px;
+    }
+
+    .wp-block.property.list {
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+        font-weight: 400;
+    }
+
+    .wp-block .wp-block-body {
+        padding: 15px;
+    }
+
+    .wp-block.property.list .wp-block-img {
+        display: table-cell;
+        width: 250px;
+    }
+
+        .wp-block.property.list .wp-block-img img {
+            width: 100%;
+        }
+
+    .wp-block.property.list .wp-block-content .content-title {
+        font-size: 20px;
+        color: blueviolet;
+        margin-bottom: 5px;
+    }
+
+    .wp-block.property.list .wp-block-content .content-rate {
+        font-size: 20px;
+        color: #3498db;
+        margin-bottom: 5px;
+    }
+
+    .wp-block.property.list .wp-block-body .wp-block-content {
+        display: table-cell;
+        vertical-align: top;
+        padding-left: 15px;
+    }
+
+    .wp-block.property.list .wp-block-content .description {
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0eded;
+    }
+
+    .wp-block.property.list .wp-block-footer ul.aux-info {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: block;
+        background: #fcfcfc;
+        border-top: 1px solid #e0eded;
+    }
+
+        .wp-block.property.list .wp-block-footer ul.aux-info li {
+            display: table-cell;
+            padding: 10px 15px;
+            vertical-align: middle;
+            border-right: 1px solid #e0eded;
+        }
+
+.ribbon.base {
+    background: #3498db;
+    color: #fff;
+    border-right: 5px solid #8bc4ea;
+}
+
+.ribbon {
+    position: absolute;
+    top: 20px;
+    right: -5px;
+    padding: 15px;
+}
+
+.base {
+    background: #3498db;
+    color: #fff !important;
+}
+
+.ribbon:before, .ribbon:after {
+    content: '';
+    position: absolute;
+    left: -9px;
+    border-left: 10px solid transparent;
+}
+
+.ribbon:before {
+    top: 0;
+}
+
+.ribbon.base:before {
+    border-top: 27px solid #3498db;
+}
+
+.ribbon.base:after {
+    border-bottom: 27px solid #3498db;
+}
+
+.ribbon:after {
+    bottom: 0;
+}

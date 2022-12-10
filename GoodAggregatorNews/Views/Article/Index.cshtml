@@ -3,20 +3,41 @@
 @{
 	ViewData["Title"] = "Article";
 }
+	<a href="/"><img src="~/img/news.jpg" style="overflow:hidden; left:391px; width:1200px; height:150px"  alt="news"></a>
+   
 
-<h1>Articles</h1>
 
- <div class="row">
+ <div class="row" >
     @if (Model.Any())
     {
+
        foreach (var item in Model)
        {
-            await Html.RenderPartialAsync("ArticlePreview", item);
+         <div class="container">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="wp-block property list">
+                  <div class="wp-block-body">
+                     <div class="wp-block-content">
+                      <small>
+                      <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> @item.PublicationDate.ToString("g")</small>
+                      <h4 class="content-title">@item.Title</h4>
+                      <h3 class="content-rate">Rate: @string.Format("{0:0.00}", @item?.Rate)</h3>
+                      <div>@Html.Raw(@item.ShortDescription)</div>
+                      <span class="pull-right">
+                        <span class="capacity">
+                           <a class="btn btn-primary" href="~/article/details/@item.Id">Read details</a> 
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+          <br>
+
        }
-
-
-
-     
     }
 </div>
      

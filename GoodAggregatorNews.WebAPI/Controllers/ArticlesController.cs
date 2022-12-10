@@ -61,14 +61,14 @@ namespace GoodAggregatorNews.WebAPI.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(ArticleDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Nullable), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAllArticles([FromQuery]GetArticlesRequestModel? model)
+        public async Task<IActionResult> GetAllArticles([FromQuery] GetArticlesRequestModel? model)
         {
             try
             {
-                 var articles = await _articleService
-                    .GetArticlesByNameAndSourcesAsync(model?.Name, model?.SourceId);
+                var articles = await _articleService
+                   .GetArticlesByNameAndSourcesAsync(model?.Name, model?.SourceId);
 
-                if (articles!=null)
+                if (articles != null)
                 {
                     return Ok(articles);
                 }
@@ -99,12 +99,17 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                 {
                     foreach (var source in sources)
                     {
-                        await _articleService.GetAllArticleDataFromRssAsync();
-                        await _articleService.AddArticleTextToArticleAsync();
-                        //RecurringJob.AddOrUpdate(()=>_articleService.GetAllArticleDataFromRssAsync(),
-                        //    "*/20 * * * *");
-                        //RecurringJob.AddOrUpdate(() => _articleService.AddArticleTextToArticleAsync(),
-                        //    "*/30 * * * *");
+                        //await _articleService.GetAllArticleDataFromRssAsync();
+                        //await _articleService.AddArticleTextToArticleAsync();
+                        //await _articleService.AddRateToArticlesAsync();
+
+                        RecurringJob.AddOrUpdate(() => _articleService.GetAllArticleDataFromRssAsync(),
+                            "*/20 * * * *");
+                        RecurringJob.AddOrUpdate(() => _articleService.AddArticleTextToArticleAsync(),
+                            "*/30 * * * *");
+                        RecurringJob.AddOrUpdate(() => _articleService.AddRateToArticlesAsync(),
+                                   "*/15 * * * *");
+
                     }
 
                     return Ok();

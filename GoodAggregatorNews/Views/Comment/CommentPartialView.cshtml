@@ -6,10 +6,11 @@
     Layout = null;
 }
 
-<div class="card col-sm-12">
+<div class="card2 col-sm-12">
     <div class="card-body">
-        <p>@Model.FullName @Model.PublicationDate.ToString("dd.MM.yyyy HH:mm")</p>
-        <p class="card-text">@Model.Text</p>
+        <p>@Model.FullName 
+            </br>@Model.PublicationDate.ToString("f")</p>
+        <p class="card-text">@Model.Text </p>
     </div>
 </div>
 

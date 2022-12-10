@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using GoodAggregatorNews.Abstractions;
+using GoodAggregatorNews.Business.Models;
 using GoodAggregatorNews.Core;
 using GoodAggregatorNews.Core.Abstractions;
 using GoodAggregatorNews.Core.DataTransferObject;
 using GoodAggregatorNews.Database.Entities;
 using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -13,6 +17,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.ServiceModel.Syndication;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -23,14 +28,18 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IParseService _parseService;
+        private readonly IConfiguration _configuration;
+
 
         public ArticleService(IMapper mapper, 
             IUnitOfWork unitOfWork, 
-            IParseService parseService)
+            IParseService parseService,
+            IConfiguration configuration)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _parseService = parseService;
+            _configuration = configuration;
         }
 
         public async Task<int> CreateArticleAsync(ArticleDto dto)
@@ -223,6 +232,26 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 throw;
             }
         }
+        public async Task AddRateToArticlesAsync()
+        {
+            try
+            {
+                var articlesWithEmptyRateId = _unitOfWork.Articles.Get()
+                   .Where(art => art.Rate == null && !string.IsNullOrEmpty(art.FullText))
+                   .Select(art => art.Id)
+                   .ToList();
+
+                foreach (var articleId in articlesWithEmptyRateId)
+                {
+                     await RateArticlesAsync(articleId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: AddRateToArticlesAsync was not successful");
+                throw;
+            }
+        }
 
         private async Task RateArticlesAsync(Guid articleId)
         {
@@ -231,19 +260,67 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 if (!Guid.Empty.Equals(articleId))
                 {
                     var article = await _unitOfWork.Articles.GetByIdAsync(articleId);
+
                     if (article!=null)
                     {
+                        var textWithoutHtml = await RemoveHtmlTags(article.FullText);
+
                         using (var client = new HttpClient())
                         {
+                            var affin = _configuration["Affin"];
+
                             var httpRequest = new HttpRequestMessage(HttpMethod.Post,
                                 new Uri(@"http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=6c70e0796fde0b04d1a524b084f47b412229b7d8"));
 
                             httpRequest.Headers.Add("Accept", "application/json");
 
                             httpRequest.Content = JsonContent.Create(new TextRequestModel[]
-                                { new TextRequestModel() {Text = article.FullText}});
+                                { new TextRequestModel() {Text = textWithoutHtml}});
 
                             var response = await client.SendAsync(httpRequest);
+
+                            var responseStr = await response.Content.ReadAsStreamAsync();
+
+                            using (var sr = new StreamReader(responseStr))
+                            {
+                                var data = await sr.ReadToEndAsync();
+
+                                var resp = JsonConvert
+                                    .DeserializeObject<IsprassResponseObject[]>(data);
+
+                                if (resp!=null)
+                                {
+                                    var affinText = await File.ReadAllTextAsync(@affin);
+
+                                    var dict = JsonConvert.DeserializeObject<Dictionary<string, int?>>(affinText);
+
+                                    if (dict.Any())
+                                    {
+                                        double countWords = 0;
+                                        double intermediateResult = 0;
+
+                                        foreach (var lem in resp[0].Annotations.Lemma)
+                                        {
+                                            int? rate = 0;
+                                            dict.TryGetValue(lem.Value, out rate);
+
+                                            if (rate!=null)
+                                            {
+                                                intermediateResult += (double)rate;
+                                                countWords++;
+                                            }
+                                        }
+
+                                        if (countWords>0)
+                                        {
+                                            double result = intermediateResult / countWords;
+
+                                            await _unitOfWork.Articles.UpdateArticleRateByIdAsync(articleId, result);
+                                            await _unitOfWork.Commit();
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -308,6 +385,11 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
+        private async Task<string> RemoveHtmlTags(string text)
+        {
+            var input = text.Replace("&nbsp;", " ");
+            return Regex.Replace(input, "<.*?>", String.Empty);
+        }
 
     }
 }
