@@ -2,6 +2,8 @@ using GoodAggregatorNews.Abstractions;
 using GoodAggregatorNews.Abstractions.Repositories;
 using GoodAggregatorNews.Business.ServicesImplementations;
 using GoodAggregatorNews.Core.Abstractions;
+using GoodAggregatorNews.Data.CQS.Commands;
+using GoodAggregatorNews.Data.CQS.Queries;
 using GoodAggregatorNews.Database;
 using GoodAggregatorNews.Database.Entities;
 using GoodAggregatorNews.Repositories;
@@ -9,6 +11,7 @@ using GoodAggregatorNews.WebAPI.Filters;
 using GoodAggregatorNews.WebAPI.Utils;
 using Hangfire;
 using Hangfire.SqlServer;
+using HtmlAgilityPack;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -72,11 +75,24 @@ namespace GoodAggregatorNews.WebAPI
             builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            builder.Services.AddScoped<HtmlWeb>();
             builder.Services.AddScoped<IParseService, ParseService>();
-
             builder.Services.AddScoped<IJwtUtil, JwtUtilSha256>();
 
-            //add mediatr
+            builder.Services.AddMediatR(typeof(AddArticleDataFromRssFeedCommand).Assembly);
+            builder.Services.AddMediatR(typeof(AddRefreshTokenCommand).Assembly);
+            builder.Services.AddMediatR(typeof(AddArticleCommand).Assembly);
+            builder.Services.AddMediatR(typeof(UpdateArticleRateCommand).Assembly);
+            builder.Services.AddMediatR(typeof(RemoveRefreshTokenCommand).Assembly);
+
+
+
+            builder.Services.AddMediatR(typeof(GetAllArticlesWithoutTextIdsQuery).Assembly);
+            builder.Services.AddMediatR(typeof(GetArticleByIdQuery).Assembly);
+            builder.Services.AddMediatR(typeof(GetAllSourcesQuery).Assembly);
+            builder.Services.AddMediatR(typeof(GetArticlesWithEmptyRateIdQuery).Assembly);
+            builder.Services.AddMediatR(typeof(GetClientByRefreshTokenQuery).Assembly);
+
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(opt=>

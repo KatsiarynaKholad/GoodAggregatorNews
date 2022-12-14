@@ -2,9 +2,12 @@ using GoodAggregatorNews.Abstractions;
 using GoodAggregatorNews.Abstractions.Repositories;
 using GoodAggregatorNews.Business.ServicesImplementations;
 using GoodAggregatorNews.Core.Abstractions;
+using GoodAggregatorNews.Data.CQS.Commands;
+using GoodAggregatorNews.Data.CQS.Queries;
 using GoodAggregatorNews.Database;
 using GoodAggregatorNews.Database.Entities;
 using GoodAggregatorNews.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -55,6 +58,20 @@ namespace GoodAggregatorNews
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddScoped<IParseService, ParseService>();
+
+            builder.Services.AddMediatR(typeof(AddArticleDataFromRssFeedCommand).Assembly);
+            builder.Services.AddMediatR(typeof(AddRefreshTokenCommand).Assembly);
+            builder.Services.AddMediatR(typeof(AddArticleCommand).Assembly);
+            builder.Services.AddMediatR(typeof(UpdateArticleRateCommand).Assembly);
+            builder.Services.AddMediatR(typeof(RemoveRefreshTokenCommand).Assembly);
+
+            builder.Services.AddMediatR(typeof(GetAllArticlesWithoutTextIdsQuery).Assembly);
+            builder.Services.AddMediatR(typeof(GetArticleByIdQuery).Assembly);
+            builder.Services.AddMediatR(typeof(GetAllSourcesQuery).Assembly);
+            builder.Services.AddMediatR(typeof(GetArticlesWithEmptyRateIdQuery).Assembly);
+            builder.Services.AddMediatR(typeof(GetClientByRefreshTokenQuery).Assembly);
+
+
 
             var app = builder.Build();
 

@@ -24,8 +24,9 @@ namespace GoodAggregatorNews.Controllers
 
                 if (articles.Any())
                 {
-                    var sortedArticles = articles.OrderByDescending(art=>art.Rate)
-                        .ThenByDescending(a => a.PublicationDate)
+                    var sortedArticles = articles.Where(art=>art.FullText!=null)
+                        .OrderByDescending(art=>art.PublicationDate)
+                        .ThenByDescending(a => a.Rate)
                         .ToList();
 
                     return View(sortedArticles);

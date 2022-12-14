@@ -2,7 +2,9 @@
 using GoodAggregatorNews.Abstractions;
 using GoodAggregatorNews.Core.Abstractions;
 using GoodAggregatorNews.Core.DataTransferObject;
+using GoodAggregatorNews.Data.CQS.Queries;
 using GoodAggregatorNews.Database.Entities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Serilog;
@@ -19,15 +21,21 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
 
-        public ClientService(IMapper mapper, IConfiguration configuration, IUnitOfWork unitOfWork)
+
+        public ClientService(IMapper mapper, 
+            IConfiguration configuration,
+            IUnitOfWork unitOfWork,
+            IMediator mediator)
         {
             _mapper = mapper;
             _configuration = configuration;
             _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
-        public async Task<bool> CheckUserPassword(string email, string password)
+        public async Task<bool> CheckClientPassword(string email, string password)
         {
             try
             {
@@ -37,29 +45,31 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
 
                 return
                      dbPasswordHash != null
-                     && CreateMd5(password).Equals(dbPasswordHash);
+                     && CreateMd5(password)
+                     .Equals(dbPasswordHash);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: CheckUserPassword was not successful");
+                Log.Error(ex, "Operation: CheckClientPassword was not successful");
                 throw;
             }
           
         }
 
-        public async Task<bool> CheckUserPassword(Guid userId, string password)
+        public async Task<bool> CheckClientPassword(Guid clientId, string password)
         {
             try
             {
-                var dbPasswordHash = (await _unitOfWork.Clients.GetByIdAsync(userId))?.PasswordHash;
+                var dbPasswordHash = (await _unitOfWork.Clients.GetByIdAsync(clientId))?.PasswordHash;
 
                 return
                     dbPasswordHash != null
-                    && CreateMd5(password).Equals(dbPasswordHash);
+                    && CreateMd5(password)
+                    .Equals(dbPasswordHash);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: CheckUserPassword was not successful");
+                Log.Error(ex, "Operation: CheckClientPassword was not successful");
                 throw;
             }
         }
@@ -146,7 +156,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        public async Task DeleteClientAsync(Guid id)
+        public async Task DeleteClient(Guid id)
         {
             try
             {
@@ -162,13 +172,13 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: DeleteClientAsync was not successful");
+                Log.Error(ex, "Operation: DeleteClient was not successful");
                 throw;
             }
         
         }
 
-        public async Task<int> RegisterUser(ClientDto dto, string password)
+        public async Task<int> RegisterClient(ClientDto dto, string password)
         {
             try
             {
@@ -181,7 +191,27 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: RegisterUser was not successful");
+                Log.Error(ex, "Operation: RegisterClient was not successful");
+                throw;
+            }
+        }
+
+        public async Task<ClientDto?> GetClientByRefreshTokenAsync(Guid token)
+        {
+            try
+            {
+                if (!Guid.Empty.Equals(token))
+                {
+                    var client = await _mediator
+                       .Send(new GetClientByRefreshTokenQuery() { RefreshToken = token });
+                    return client;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Operation: GetClientByRefreshTokenAsync was not successful");
                 throw;
             }
         }

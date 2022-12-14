@@ -10,12 +10,13 @@ namespace GoodAggregatorNews.Core.Abstractions
     public interface IClientService
     {
         Task<bool> IsUserExists(Guid userId);
-        Task<bool> CheckUserPassword(string email, string password);
-        Task<bool> CheckUserPassword(Guid userId, string password);
-        Task<int> RegisterUser(ClientDto dto, string password);
+        Task<bool> CheckClientPassword(string email, string password);
+        Task<bool> CheckClientPassword(Guid userId, string password);
+        Task<int> RegisterClient(ClientDto dto, string password);
         Task<ClientDto?> GetClientByEmailAsync(string email);
         Task<IEnumerable<ClientDto>> GetAllUsersAsync();
-        Task DeleteClientAsync(Guid id);
+        Task DeleteClient(Guid id);
         Task<bool> IsUserExists(string email);
+        Task<ClientDto?> GetClientByRefreshTokenAsync(Guid token);
     }
 }

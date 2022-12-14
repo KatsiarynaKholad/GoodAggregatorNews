@@ -14,7 +14,7 @@ namespace GoodAggregatorNews.Database.Entities
         public string PasswordHash { get; set; }
         public DateTime RegistationDate { get; set; }
         public List<Comment> Comments { get; set; }
-
+        public List<RefreshToken> RefreshTokens { get; set; }
         public Guid RoleId { get; set; }
         public Role Role { get; set; }
     }

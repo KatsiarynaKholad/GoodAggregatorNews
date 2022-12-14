@@ -58,7 +58,6 @@ namespace GoodAggregatorNews.Controllers
             }
         }
 
-
         [HttpGet]
         public async Task<IActionResult> CreateCommentPartial(Guid articleId)
         {

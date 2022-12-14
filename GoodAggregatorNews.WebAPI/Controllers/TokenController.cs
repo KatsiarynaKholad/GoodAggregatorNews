@@ -15,15 +15,15 @@ namespace GoodAggregatorNews.WebAPI.Controllers
     [ApiController]
     public class TokenController : ControllerBase
     {
-        private readonly IClientService _clietnService;
+        private readonly IClientService _clientService;
         private readonly IMapper _mapper;
         private readonly IJwtUtil _jwtUtil;
 
-        public TokenController(IClientService clietnService,
+        public TokenController(IClientService clientService,
             IMapper mapper,
             IJwtUtil jwtUtil)
         {
-            _clietnService = clietnService;
+            _clientService = clientService;
             _mapper = mapper;
             _jwtUtil = jwtUtil;
         }
@@ -31,21 +31,21 @@ namespace GoodAggregatorNews.WebAPI.Controllers
         /// <summary>
         /// Create JwtToken
         /// </summary>
-        /// <param name="requestModel"></param>
-        /// <returns></returns>
+        /// <param name = "requestModel" ></ param >
+        /// < returns ></ returns >
         [HttpPost]
         public async Task<IActionResult> Authenticate([FromBody] LoginClientRequestModel requestModel)
         {
             try
             {
-                var client = await _clietnService.GetClientByEmailAsync(requestModel.Email);
+                var client = await _clientService.GetClientByEmailAsync(requestModel.Email);
                 if (client != null)
                 {
-                    var isPasswordCorrect = await _clietnService.CheckUserPassword(requestModel.Email, 
+                    var isPasswordCorrect = await _clientService.CheckClientPassword(requestModel.Email,
                         requestModel.Password);
                     if (isPasswordCorrect)
                     {
-                        var response = _jwtUtil.GenerateToken(client);
+                        var response = await _jwtUtil.GenerateTokenAsync(client);
                         return Ok(response);
                     }
                 }
@@ -58,5 +58,52 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                 throw;
             }
         }
+
+        ///// <summary>
+        /////  RefreshToken
+        ///// </summary>
+        ///// <param name="requestModel"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestModel requestModel)
+        //{
+        //    try
+        //    {
+        //        var client = await _clientService.GetClientByRefreshTokenAsync(requestModel.RefreshToken);
+        //        if (client != null)
+        //        {
+        //            var response = await _jwtUtil.GenerateTokenAsync(client);
+        //            await _jwtUtil.RemoveRefreshTokenAsync(requestModel.RefreshToken);
+        //            return Ok(response);
+        //        }
+
+        //        return BadRequest();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error(ex, "Operation: RefreshToken was not successful");
+        //        return StatusCode(500);
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Remove refreshToken
+        ///// </summary>
+        ///// <param name="requestModel"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public async Task<IActionResult> RevokeToken([FromBody] RefreshTokenRequestModel requestModel)
+        //{
+        //    try
+        //    {
+        //        await _jwtUtil.RemoveRefreshTokenAsync(requestModel.RefreshToken);
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error(ex, "Operation: Authenticate was not successful");
+        //        return StatusCode(500);
+        //    }
+        //}
     }
 }

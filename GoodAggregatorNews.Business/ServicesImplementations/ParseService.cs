@@ -27,37 +27,42 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 var article = await _unitOfWork.Articles.GetByIdAsync(articleid);
                 if (article != null)
                 {
-                    var articleSourceUrl = article.SourceUrl;
-
-                    var web = new HtmlWeb();
-
-                    var htmlDoc = web.Load(articleSourceUrl);
-
-                    var nodes =
-                       htmlDoc.DocumentNode.Descendants(0)
-                       .Where(n => n.HasClass("article__body"));
-
-                    if (nodes.Any())
+                    //for devby.io
+                    if (article.SourceId == new Guid("14ccd0a7-2885-4fad-ba79-fe20bdf831d1"))
                     {
-                        var articleText = (nodes.FirstOrDefault()?.ChildNodes
-                           .Where(node => node.HasClass("article__container")))?
-                           .FirstOrDefault()?.ChildNodes
-                                .Where(node => node.Name.Equals("p")
-                                    || node.Name.Equals("h2")
-                                    || node.Name.Equals("h4")
-                                    || node.Name.Equals("h3")
-                                    || node.Name.Equals("ul")
-                                    || node.Name.Equals("ol")
-                                    || node.Name.Equals("li")
-                                    || (node.Name.Equals("figure")
-                                    && !node.HasClass("incut") 
-                                    && !node.HasClass("global-incut")))
-                                .Select(node => node.OuterHtml.Trim())
-                                .Aggregate((i, j) => i + Environment.NewLine + j);
+                        var articleSourceUrl = article.SourceUrl;
+
+                        var web = new HtmlWeb();
+
+                        var htmlDoc = web.Load(articleSourceUrl);
+
+                        var nodes =
+                           htmlDoc.DocumentNode.Descendants(0)
+                           .Where(n => n.HasClass("article__body"));
+
+                        if (nodes.Any())
+                        {
+                            var articleText = (nodes.FirstOrDefault()?.ChildNodes
+                               .Where(node => node.HasClass("article__container")))?
+                               .FirstOrDefault()?.ChildNodes
+                                    .Where(node => node.Name.Equals("p")
+                                        || node.Name.Equals("h2")
+                                        || node.Name.Equals("h4")
+                                        || node.Name.Equals("h3")
+                                        || node.Name.Equals("ul")
+                                        || node.Name.Equals("ol")
+                                        || node.Name.Equals("li")
+                                        || (node.Name.Equals("figure")
+                                        && !node.HasClass("incut")
+                                        && !node.HasClass("incut-card")
+                                        && !node.HasClass("global-incut")))
+                                    .Select(node => node.OuterHtml.Trim())
+                                    .Aggregate((i, j) => i + Environment.NewLine + j);
 
 
-                        await _unitOfWork.Articles.UpdateArticleTextAsync(articleid, articleText);
-                        await _unitOfWork.Commit();
+                            await _unitOfWork.Articles.UpdateArticleTextAsync(articleid, articleText);
+                            await _unitOfWork.Commit();
+                        }
                     }
                 }
             }

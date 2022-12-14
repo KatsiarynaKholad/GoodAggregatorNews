@@ -74,7 +74,7 @@ namespace GoodAggregatorNews.WebAPI.Controllers
             {
                 if (!Guid.Empty.Equals(id))
                 {
-                    await _clientService.DeleteClientAsync(id);
+                    await _clientService.DeleteClient(id);
                     return Ok();
 
                 }
@@ -106,19 +106,17 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                     && model.Password.Equals(model.ConfirmationPassword))
                 {
                     dto.RoleId = clientRoleId.Value;
-                    var res = await _clientService.RegisterUser(dto, model.Password);
+                    var res = await _clientService.RegisterClient(dto, model.Password);
                     if (res>0)
                     {
                         var clientInDb = await _clientService.GetClientByEmailAsync(dto.Email);
-                        var response = _jwtUtil.GenerateToken(clientInDb);
+                        var response = await _jwtUtil.GenerateTokenAsync(clientInDb);
+                        return Ok(response);
+
                     }
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest();
 
                 }
+                return BadRequest();
 
             }
             catch (Exception ex)
@@ -126,9 +124,6 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                 Log.Error(ex, "Operation: CreateClient in ClientsController is not successful");
                 throw;
             }
-
         }
-
-
     }
 }

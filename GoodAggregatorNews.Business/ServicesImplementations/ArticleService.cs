@@ -4,8 +4,11 @@ using GoodAggregatorNews.Business.Models;
 using GoodAggregatorNews.Core;
 using GoodAggregatorNews.Core.Abstractions;
 using GoodAggregatorNews.Core.DataTransferObject;
+using GoodAggregatorNews.Data.CQS.Commands;
+using GoodAggregatorNews.Data.CQS.Queries;
 using GoodAggregatorNews.Database.Entities;
 using HtmlAgilityPack;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -29,30 +32,39 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IParseService _parseService;
         private readonly IConfiguration _configuration;
+        private readonly IMediator _mediator;
+
 
 
         public ArticleService(IMapper mapper, 
             IUnitOfWork unitOfWork, 
             IParseService parseService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMediator mediator)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _parseService = parseService;
             _configuration = configuration;
+            _mediator = mediator;
         }
 
-        public async Task<int> CreateArticleAsync(ArticleDto dto)
+        public async Task<int> CreateArticleAsync(ArticleDto dto)         
         {
             try
             {
-                var entity = _mapper.Map<Article>(dto);
-                if (entity!=null)
+                if (dto!=null)
                 {
-                    await _unitOfWork.Articles.AddAsync(entity);
-                    var resultSaveChanges = await _unitOfWork.Commit();
-                    return resultSaveChanges;
+                    var result = await _mediator.Send(new AddArticleCommand() { Dto = dto });
+                    return result;
                 }
+                //var entity = _mapper.Map<Article>(dto);
+                //if (entity!=null)
+                //{
+                //    await _unitOfWork.Articles.AddAsync(entity);
+                //    var resultSaveChanges = await _unitOfWork.Commit();
+                //    return resultSaveChanges;
+                //}
                 else
                 {
                     throw new ArgumentException(nameof(dto));
@@ -65,11 +77,11 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        public async Task<ArticleDto> GetArticleByIdAsync(Guid id)
+        public async Task<ArticleDto> GetArticleByIdAsync(Guid id)   
         {
             try
             {
-                var entity = await _unitOfWork.Articles.GetByIdAsync(id);
+                var entity = await _mediator.Send(new GetArticleByIdQuery() { Id = id });
                 if (entity!=null)
                 {
                     var dto = _mapper.Map<ArticleDto>(entity);
@@ -84,7 +96,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        public async Task<List<ArticleDto>> GetArticlesByPageNumberAndPageSizeAsync()
+        public async Task<List<ArticleDto>> GetArticlesByPageNumberAndPageSizeAsync()  
         {
             try
             {
@@ -106,7 +118,9 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
         {
             try
             {
-                var sources = await _unitOfWork.Sources.GetAllAsync();
+                var sources = await _mediator.Send(new GetAllSourcesQuery());
+               
+                //var sources = await _unitOfWork.Sources.GetAllAsync();
 
                 if (sources.Any())
                 {
@@ -170,7 +184,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        public async Task DeleteArticleAsync(Guid id)
+        public async Task DeleteArticleAsync(Guid id)     
         {
             try
             {
@@ -196,13 +210,19 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
         
         }
 
-        public async Task GetAllArticleDataFromRssAsync()
+        public async Task GetAllArticleDataFromRssAsync()  
         {
             try
             {
                 var sources = await _unitOfWork.Sources.GetAllAsync();
-                Parallel.ForEach(sources, (source) => GetAllArticleDataFromRssAsync(source.Id, source.RssUrl)
-                .Wait());
+
+                foreach (var source in sources)
+                {
+                    await GetAllArticleDataFromRssAsync(source.Id, source.RssUrl);
+                }
+                //Parallel.ForEach(sources, (source) => GetAllArticleDataFromRssAsync(source.Id, source.RssUrl)
+                //    .Wait());
+
             }
             catch (Exception ex)
             {
@@ -215,16 +235,16 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
         {
             try
             {
-                var articlesWithEmptyTextId = _unitOfWork.Articles.Get()
-                   .Where(art => string.IsNullOrEmpty(art.FullText))
-                   .Select(art => art.Id)
-                   .ToList();
+                var articlesWithEmptyTextId = await _mediator
+                    .Send(new GetAllArticlesWithoutTextIdsQuery());
 
-                foreach (var articleId in articlesWithEmptyTextId)
+                if (articlesWithEmptyTextId != null)
                 {
-                     await _parseService.AddArticleTextToArticleAsync(articleId);
+                    foreach (var articleId in articlesWithEmptyTextId)
+                    {
+                        await _parseService.AddArticleTextToArticleAsync(articleId);
+                    }
                 }
-
             }
             catch (Exception ex)
             {
@@ -232,14 +252,17 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 throw;
             }
         }
-        public async Task AddRateToArticlesAsync()
+        public async Task AddRateToArticlesAsync()     
         {
             try
             {
-                var articlesWithEmptyRateId = _unitOfWork.Articles.Get()
-                   .Where(art => art.Rate == null && !string.IsNullOrEmpty(art.FullText))
-                   .Select(art => art.Id)
-                   .ToList();
+                var articlesWithEmptyRateId = await _mediator
+                    .Send(new GetArticlesWithEmptyRateIdQuery());
+
+                //var articlesWithEmptyRateId = _unitOfWork.Articles.Get()
+                //   .Where(art => art.Rate == null && !string.IsNullOrEmpty(art.FullText))
+                //   .Select(art => art.Id)
+                //   .ToList();
 
                 foreach (var articleId in articlesWithEmptyRateId)
                 {
@@ -253,7 +276,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
         }
 
-        private async Task RateArticlesAsync(Guid articleId)
+        private async Task RateArticlesAsync(Guid articleId)        
         {
             try
             {
@@ -315,8 +338,11 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                                         {
                                             double result = intermediateResult / countWords;
 
-                                            await _unitOfWork.Articles.UpdateArticleRateByIdAsync(articleId, result);
-                                            await _unitOfWork.Commit();
+                                            await _mediator
+                                                .Send(new UpdateArticleRateCommand() { ArticleId = articleId, Rate = result });
+
+                                            //await _unitOfWork.Articles.UpdateArticleRateByIdAsync(articleId, result);
+                                            //await _unitOfWork.Commit();
                                         }
                                     }
                                 }
@@ -356,7 +382,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                                 Id = Guid.NewGuid(),
                                 Title = item.Title.Text,
                                 PublicationDate = item.PublishDate.UtcDateTime,
-                                ShortDescription = item.Summary?.Text,
+                                ShortDescription = (item.Summary?.Text),
                                 Category = item.Categories.FirstOrDefault()?.Name,
                                 SourceId = sourceId,
                                 SourceUrl = item.Id
@@ -365,17 +391,9 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                             list.Add(articleDto);
                         }
                     }
+                    await _mediator.Send(new AddArticleDataFromRssFeedCommand()
+                    { Articles = list });
 
-                    var oldArticleUrl = await _unitOfWork.Articles.Get()
-                        .Select(art => art.SourceUrl)
-                        .Distinct()
-                        .ToListAsync();
-
-                    var entities = list.Where(dto => !oldArticleUrl.Contains(dto.SourceUrl))
-                        .Select(dto => _mapper.Map<Article>(dto)).ToList();
-
-                    await _unitOfWork.Articles.AddRangeAsync(entities);
-                    await _unitOfWork.Commit();
                 }
             }
             catch (Exception ex)

@@ -5,6 +5,7 @@ namespace GoodAggregatorNews.WebAPI.Utils
 {
     public interface IJwtUtil
     {
-        TokenResponse GenerateToken(ClientDto dto);
+        Task<TokenResponse> GenerateTokenAsync(ClientDto dto);
+        Task RemoveRefreshTokenAsync(Guid requestRefreshToken);
     }
 }
