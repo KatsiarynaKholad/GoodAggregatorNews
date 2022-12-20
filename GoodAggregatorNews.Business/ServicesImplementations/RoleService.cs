@@ -32,8 +32,6 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 {
                     return null;
                 }
-
-
             }
             catch (Exception ex)
             {

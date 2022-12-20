@@ -14,7 +14,6 @@ namespace GoodAggregatorNews.Database.Entities
         public string Url { get; set; }
         public string? RssUrl { get; set; }
         public SourceType SourceType { get; set; }
-
         public List<Article> Articles { get; set; }
     }
 }

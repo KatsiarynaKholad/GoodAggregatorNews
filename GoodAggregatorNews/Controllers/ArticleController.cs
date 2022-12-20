@@ -63,8 +63,5 @@ namespace GoodAggregatorNews.Controllers
                 return StatusCode(404);
             }
         }
-
-        
-
     }
 }

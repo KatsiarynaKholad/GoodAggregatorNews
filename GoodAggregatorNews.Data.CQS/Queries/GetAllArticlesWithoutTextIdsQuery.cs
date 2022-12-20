@@ -9,6 +9,5 @@ namespace GoodAggregatorNews.Data.CQS.Queries
 {
     public class GetAllArticlesWithoutTextIdsQuery : IRequest<Guid[]?>
     {
-
     }
 }

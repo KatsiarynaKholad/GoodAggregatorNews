@@ -99,6 +99,10 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                 {
                     foreach (var source in sources)
                     {
+                        await _articleService.GetAllArticleDataFromRssAsync();
+                        await _articleService.AddArticleTextToArticleAsync();
+                        await _articleService.AddRateToArticlesAsync();
+
                         RecurringJob.AddOrUpdate(() => _articleService.GetAllArticleDataFromRssAsync(),
                             "*/20 * * * *");
                         RecurringJob.AddOrUpdate(() => _articleService.AddArticleTextToArticleAsync(),
@@ -146,6 +150,5 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                 throw;
             }
         }
-
     }
 }

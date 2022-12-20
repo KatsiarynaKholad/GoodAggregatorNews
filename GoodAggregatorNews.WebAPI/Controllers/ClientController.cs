@@ -99,7 +99,7 @@ namespace GoodAggregatorNews.WebAPI.Controllers
             {
                 var clientRoleId = await _roleService.GetRoleIdByNameAsync("User");
                 var dto = _mapper.Map<ClientDto>(model);
-                var isClientExist = await _clientService.IsUserExists(model.Email);
+                var isClientExist = await _clientService.IsClientExists(model.Email);
                 if (clientRoleId!=null
                     && dto!=null
                     && !isClientExist
@@ -114,10 +114,8 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                         return Ok(response);
 
                     }
-
                 }
                 return BadRequest();
-
             }
             catch (Exception ex)
             {

@@ -107,7 +107,7 @@ namespace GoodAggregatorNews.Controllers
 
                     CommentDto commentDto = new CommentDto()
                     {
-                        FullName = client.Name,
+                        Fullname = client.Name,
                         Id = Guid.NewGuid(),
                         ArticleId = comment.ArticleId,
                         PublicationDate = DateTime.Now,

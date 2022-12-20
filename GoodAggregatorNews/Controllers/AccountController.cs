@@ -95,13 +95,14 @@ namespace GoodAggregatorNews.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var isPasswordCorrect = await _clientService.CheckClientPassword(model.Email, model.Password);
+                    var isPasswordCorrect = await _clientService
+                        .CheckClientPassword(model.Email, model.Password);
+
                     if (isPasswordCorrect)
                     {
                         await Authenticate(model.Email);
 
                         return RedirectToAction("Index", "Article");
-
                     }
                 }
                 return View(model);
@@ -198,9 +199,7 @@ namespace GoodAggregatorNews.Controllers
                 var user = _mapper.Map<ClientDataModel>(await _clientService.GetClientByEmailAsync(userEmail));
                 return View(user);
             }
-
             return View();
         }
-
     }
 }

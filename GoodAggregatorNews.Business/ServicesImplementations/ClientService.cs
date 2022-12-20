@@ -43,10 +43,11 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                          .FirstOrDefaultAsync(client => client.Email.Equals(email)))
                          ?.PasswordHash;
 
-                return
-                     dbPasswordHash != null
-                     && CreateMd5(password)
-                     .Equals(dbPasswordHash);
+                if (dbPasswordHash!=null && CreateMd5(password).Equals(dbPasswordHash))
+                {
+                   return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -115,13 +116,13 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: IsUserExists was not successful");
+                Log.Error(ex, "Operation: IsClientExists was not successful");
                 throw;
             }
         
         }
 
-        public async Task<bool> IsUserExists(Guid clintId)
+        public async Task<bool> IsClientExists(Guid clintId)
         {
             try
             {
@@ -133,12 +134,12 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: IsUserExists was not successful");
+                Log.Error(ex, "Operation: IsClientExists was not successful");
                 throw;
             }
         }
 
-        public async Task<bool> IsUserExists(string email)
+        public async Task<bool> IsClientExists(string email)
         {
             try
             {
@@ -151,7 +152,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Operation: IsUserExists was not successful");
+                Log.Error(ex, "Operation: IsClientExists was not successful");
                 throw;
             }
         }
@@ -184,7 +185,7 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             {
                 var entity = _mapper.Map<Client>(dto);
 
-                entity.PasswordHash = CreateMd5($"{password}.{_configuration["ClientSecrets:PasswordSalt"]}");
+                entity.PasswordHash = CreateMd5($"{password}");
 
                 await _unitOfWork.Clients.AddAsync(entity);
                 return await _unitOfWork.Commit();

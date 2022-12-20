@@ -10,7 +10,6 @@ namespace GoodAggregatorNews.Core.Abstractions
     public interface ISourceService
     {
         Task<List<SourceDto>> GetSourceAsync();
-
         Task<SourceDto> GetSourceByIdAsync(Guid id);
         Task<int> CreateSourceAsync(SourceDto dto);
 		Task DeleteSourceAsync(Guid id);

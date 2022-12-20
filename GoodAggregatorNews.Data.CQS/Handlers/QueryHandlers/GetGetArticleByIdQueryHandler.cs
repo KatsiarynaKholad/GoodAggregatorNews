@@ -38,6 +38,5 @@ namespace GoodAggregatorNews.Data.CQS.Handlers.QueryHandlers
                 throw;
             }
         }
-
     }
 }

@@ -46,7 +46,6 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                     await _jwtUtil.RemoveRefreshTokenAsync(requestModel.RefreshToken);
                     return Ok(response);
                 }
-
                 return BadRequest();
             }
             catch (Exception ex)

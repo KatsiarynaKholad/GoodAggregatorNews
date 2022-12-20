@@ -3,7 +3,7 @@ using Hangfire.Dashboard;
 
 namespace GoodAggregatorNews.WebAPI.Filters
 {
-    public class AuthorizationFilter : IDashboardAuthorizationFilter
+    public class AdminAuthorizationFilter : IDashboardAuthorizationFilter
     {
         public bool Authorize([NotNull] DashboardContext context)
         {

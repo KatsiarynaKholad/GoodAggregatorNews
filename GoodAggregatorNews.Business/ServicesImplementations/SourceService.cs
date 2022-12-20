@@ -102,6 +102,5 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 throw;
 			}
         }
-
     }
 }

@@ -14,13 +14,9 @@ namespace GoodAggregatorNews.Repositories
     {
         private readonly GoodAggregatorNewsContext _database;
         public IAdditionArticleRepository Articles { get; }
-
         public IRepository<Role> Roles { get; }
-
         public IRepository<Client> Clients { get; }
-
         public IRepository<Comment> Comments { get; }
-
         public IRepository<Source> Sources { get; }
 
         public UnitOfWork(GoodAggregatorNewsContext database, IAdditionArticleRepository articles,

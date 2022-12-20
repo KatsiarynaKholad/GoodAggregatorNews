@@ -8,7 +8,7 @@ using Serilog;
 
 namespace GoodAggregatorNews.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class SourceController : Controller
     {
         private readonly ISourceService _sourceService;
@@ -58,8 +58,6 @@ namespace GoodAggregatorNews.Controllers
 
                     return RedirectToAction("Index", "Source");
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -68,7 +66,6 @@ namespace GoodAggregatorNews.Controllers
             }
             return View();
         }
-
 
         [HttpGet]
         public async Task<IActionResult> DeleteSource(Guid id)
@@ -93,6 +90,5 @@ namespace GoodAggregatorNews.Controllers
                 throw;
 			}
         }
-
     }
 }

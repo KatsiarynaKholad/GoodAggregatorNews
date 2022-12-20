@@ -126,7 +126,7 @@ namespace GoodAggregatorNews.WebAPI
             app.UseStaticFiles();
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new[] { new AuthorizationFilter() }
+                Authorization = new[] { new AdminAuthorizationFilter() }
             });
 
             app.UseRouting();

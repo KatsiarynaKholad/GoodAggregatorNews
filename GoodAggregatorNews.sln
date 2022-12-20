@@ -17,7 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodAggregatorNews.Reposito
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodAggregatorNews.WebAPI", "GoodAggregatorNews.WebAPI\GoodAggregatorNews.WebAPI.csproj", "{ECE31C46-E892-4FCB-B95C-9A6DFAAF22CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodAggregatorNews.Data.CQS", "GoodAggregatorNews.Data.CQS\GoodAggregatorNews.Data.CQS.csproj", "{61EAB02F-1396-4F45-87F7-55EAD291FA30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodAggregatorNews.Data.CQS", "GoodAggregatorNews.Data.CQS\GoodAggregatorNews.Data.CQS.csproj", "{61EAB02F-1396-4F45-87F7-55EAD291FA30}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{32BE6314-16F2-4B70-9CEA-8E632AB1FEEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodAggregatorNews.Business.Tests", "GoodAggregatorNews.Business.Tests\GoodAggregatorNews.Business.Tests.csproj", "{15E000D4-C9CD-41BB-BCBC-ED75A30EF245}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,9 +61,16 @@ Global
 		{61EAB02F-1396-4F45-87F7-55EAD291FA30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61EAB02F-1396-4F45-87F7-55EAD291FA30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61EAB02F-1396-4F45-87F7-55EAD291FA30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15E000D4-C9CD-41BB-BCBC-ED75A30EF245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15E000D4-C9CD-41BB-BCBC-ED75A30EF245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15E000D4-C9CD-41BB-BCBC-ED75A30EF245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15E000D4-C9CD-41BB-BCBC-ED75A30EF245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{15E000D4-C9CD-41BB-BCBC-ED75A30EF245} = {32BE6314-16F2-4B70-9CEA-8E632AB1FEEB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2DA947C4-BE24-4B8C-8052-2CD2D13A80B6}

@@ -19,7 +19,6 @@ namespace GoodAggregatorNews.Data.CQS.Handlers.QueryHandlers
         private readonly GoodAggregatorNewsContext _context;
         private readonly IMapper _mapper;
 
-
         public GetClientByRefreshTokenQueryHandler(GoodAggregatorNewsContext context,
             IMapper mapper)
         {

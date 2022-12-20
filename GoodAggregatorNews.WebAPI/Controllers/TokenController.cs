@@ -58,52 +58,5 @@ namespace GoodAggregatorNews.WebAPI.Controllers
                 throw;
             }
         }
-
-        ///// <summary>
-        /////  RefreshToken
-        ///// </summary>
-        ///// <param name="requestModel"></param>
-        ///// <returns></returns>
-        //[HttpPost]
-        //public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestModel requestModel)
-        //{
-        //    try
-        //    {
-        //        var client = await _clientService.GetClientByRefreshTokenAsync(requestModel.RefreshToken);
-        //        if (client != null)
-        //        {
-        //            var response = await _jwtUtil.GenerateTokenAsync(client);
-        //            await _jwtUtil.RemoveRefreshTokenAsync(requestModel.RefreshToken);
-        //            return Ok(response);
-        //        }
-
-        //        return BadRequest();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, "Operation: RefreshToken was not successful");
-        //        return StatusCode(500);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Remove refreshToken
-        ///// </summary>
-        ///// <param name="requestModel"></param>
-        ///// <returns></returns>
-        //[HttpPost]
-        //public async Task<IActionResult> RevokeToken([FromBody] RefreshTokenRequestModel requestModel)
-        //{
-        //    try
-        //    {
-        //        await _jwtUtil.RemoveRefreshTokenAsync(requestModel.RefreshToken);
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, "Operation: Authenticate was not successful");
-        //        return StatusCode(500);
-        //    }
-        //}
     }
 }

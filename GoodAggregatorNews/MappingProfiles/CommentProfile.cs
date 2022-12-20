@@ -11,7 +11,6 @@ namespace GoodAggregatorNews.MappingProfiles
         {
             CreateMap<Comment, CommentDto>();
             CreateMap<CommentDto, Comment>();
-
         }
     }
 }

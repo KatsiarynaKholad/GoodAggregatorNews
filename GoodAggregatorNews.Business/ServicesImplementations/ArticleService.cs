@@ -58,13 +58,6 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                     var result = await _mediator.Send(new AddArticleCommand() { Dto = dto });
                     return result;
                 }
-                //var entity = _mapper.Map<Article>(dto);
-                //if (entity!=null)
-                //{
-                //    await _unitOfWork.Articles.AddAsync(entity);
-                //    var resultSaveChanges = await _unitOfWork.Commit();
-                //    return resultSaveChanges;
-                //}
                 else
                 {
                     throw new ArgumentException(nameof(dto));
@@ -120,8 +113,6 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             {
                 var sources = await _mediator.Send(new GetAllSourcesQuery());
                
-                //var sources = await _unitOfWork.Sources.GetAllAsync();
-
                 if (sources.Any())
                 {
                     foreach (var source in sources)
@@ -259,11 +250,6 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
                 var articlesWithEmptyRateId = await _mediator
                     .Send(new GetArticlesWithEmptyRateIdQuery());
 
-                //var articlesWithEmptyRateId = _unitOfWork.Articles.Get()
-                //   .Where(art => art.Rate == null && !string.IsNullOrEmpty(art.FullText))
-                //   .Select(art => art.Id)
-                //   .ToList();
-
                 foreach (var articleId in articlesWithEmptyRateId)
                 {
                      await RateArticlesAsync(articleId);
@@ -340,9 +326,6 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
 
                                             await _mediator
                                                 .Send(new UpdateArticleRateCommand() { ArticleId = articleId, Rate = result });
-
-                                            //await _unitOfWork.Articles.UpdateArticleRateByIdAsync(articleId, result);
-                                            //await _unitOfWork.Commit();
                                         }
                                     }
                                 }
@@ -408,6 +391,5 @@ namespace GoodAggregatorNews.Business.ServicesImplementations
             var input = text.Replace("&nbsp;", " ");
             return Regex.Replace(input, "<.*?>", String.Empty);
         }
-
     }
 }

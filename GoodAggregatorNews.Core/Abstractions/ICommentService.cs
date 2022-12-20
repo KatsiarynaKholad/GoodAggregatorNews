@@ -13,7 +13,5 @@ namespace GoodAggregatorNews.Core.Abstractions
         Task<List<CommentDto>> FindCommentsByArticleIdAsync(Guid id);   
         Task<int> AddCommentAsync(CommentDto comment);
         Task DeleteCommentAsync(Guid id);
-        //удаление комментария
-        //изменение комментария
     }
 }
